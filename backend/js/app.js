@@ -12,18 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Importe as dependências necessárias
 const express_1 = __importDefault(require("express"));
-const db_1 = __importDefault(require("./database/db")); // Certifique-se de ajustar o caminho para o seu arquivo db.ts
-// Crie uma instância do Express
+const db_1 = __importDefault(require("./database/db"));
 const app = (0, express_1.default)();
-const port = 3000; // Porta que o servidor irá ouvir
+const port = 3000;
 // Rota para buscar uma paróquia com base no nome
 app.get('/buscar-paroquia', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Abra a conexão com o banco de dados
+        /;
         const db = yield (0, db_1.default)();
-        // Obtenha o nome da paróquia da consulta
         const { nomeParoquia } = req.query;
         // Consulta SQL para buscar a paróquia pelo nome
         const query = `SELECT * FROM Paroquias WHERE NomeParoquia LIKE ?`;

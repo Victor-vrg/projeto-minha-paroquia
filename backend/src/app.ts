@@ -1,18 +1,18 @@
-// Importe as dependências necessárias
-import express from 'express';
-import openDatabase from './database/db'; // Certifique-se de ajustar o caminho para o seu arquivo db.ts
 
-// Crie uma instância do Express
+import express from 'express';
+import openDatabase from './database/db'; 
+
+
 const app = express();
-const port = 3000; // Porta que o servidor irá ouvir
+const port = 3000; 
 
 // Rota para buscar uma paróquia com base no nome
 app.get('/buscar-paroquia', async (req, res) => {
   try {
-    // Abra a conexão com o banco de dados
+    /
     const db = await openDatabase();
 
-    // Obtenha o nome da paróquia da consulta
+    
     const { nomeParoquia } = req.query;
 
     // Consulta SQL para buscar a paróquia pelo nome
