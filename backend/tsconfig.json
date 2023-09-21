@@ -1,11 +1,14 @@
 {
-    "compilerOptions": {
-      "target": "ES6",
-      "module": "CommonJS",
-      "outDir": "./js",
-      "rootDir": "./src",
-      "strict": true
-    },
-    "include": ["src/**/*.ts"],
-    "exclude": ["node_modules"]
-  }
+  "compilerOptions": {
+    "target": "ES6", // Pode ser ES2020 se desejar
+    "module": "CommonJS",
+    "outDir": "./js", // Pasta onde os arquivos JavaScript serão gerados
+    "rootDir": "./src", // Pasta onde seus arquivos TypeScript estão localizados
+    "strict": true,
+    "esModuleInterop": true, 
+    "skipLibCheck": true, 
+    "forceConsistentCasingInFileNames": true 
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

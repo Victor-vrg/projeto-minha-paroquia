@@ -12,7 +12,7 @@ function EscolhaParoquia() {
           <button>Buscar</button>
           <p>
             Não encontrou sua paróquia?
-            <a href="/paroquia-cadastro">Cadastre aqui</a>
+            <a href="/paroquia-cadastro"> Cadastre aqui </a>
           </p>
         </div>
       </div>

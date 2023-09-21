@@ -1,6 +1,5 @@
 body {
     background: url(../../public/img/paroquias/minha-paroquia.jpg) center/cover fixed no-repeat;
-    
   }
 .page-wrapper {
     display: flex;
@@ -8,7 +7,7 @@ body {
     min-height: 100vh;
     justify-content: space-between;
     align-items: center; /* Centraliza verticalmente */
-    backdrop-filter: blur(5px);
+
   }
   
   .content-wrapper {
@@ -32,6 +31,7 @@ body {
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    text-align:center;
   }
   
   
