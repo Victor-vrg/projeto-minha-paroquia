@@ -9,7 +9,6 @@ const port = 3000;
 // Rota para buscar uma paróquia com base no nome
 app.get('/buscar-paroquia', async (req, res) => {
   try {
-    /
     const db = await openDatabase();
 
     

@@ -19,7 +19,6 @@ const port = 3000;
 // Rota para buscar uma paróquia com base no nome
 app.get('/buscar-paroquia', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        /;
         const db = yield (0, db_1.default)();
         const { nomeParoquia } = req.query;
         // Consulta SQL para buscar a paróquia pelo nome
