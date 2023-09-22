@@ -1,23 +1,16 @@
-const sqlite3 = require('sqlite3');
-const { open } = require('sqlite');
+import sqlite3 from 'sqlite3';
+import { open, Database } from 'sqlite';
 
-const databasePath = './minha-paroquia-db.sqlite'; 
-
-
-async function openDatabase() {
+export async function openDatabase(): Promise<Database> {
   try {
     const db = await open({
-      filename: databasePath,
+      filename: './minha-paroquia-db.sqlite3', 
       driver: sqlite3.Database,
     });
-    console.log('Conexão com o banco de dados SQLite aberta com sucesso.');
+    console.log('Conexão com o banco de dados estabelecida com sucesso');
     return db;
   } catch (error) {
-    console.error('Erro ao abrir conexão com o banco de dados SQLite:', error);
-    throw error;
+    console.error('Erro ao conectar com o banco de dados:', error);
+    throw error; 
   }
 }
-
-export default openDatabase;
-
-

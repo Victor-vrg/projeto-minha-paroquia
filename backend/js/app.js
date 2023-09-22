@@ -13,29 +13,60 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const db_1 = __importDefault(require("./database/db"));
+const paroquia_1 = require("./models/paroquia");
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
-const port = 3000;
-// Rota para buscar uma paróquia com base no nome
-app.get('/buscar-paroquia', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const db = yield (0, db_1.default)();
-        const { nomeParoquia } = req.query;
-        // Consulta SQL para buscar a paróquia pelo nome
-        const query = `SELECT * FROM Paroquias WHERE NomeParoquia LIKE ?`;
-        // Execute a consulta
-        const paroquias = yield db.all(query, [`%${nomeParoquia}%`]);
-        // Feche a conexão com o banco de dados
-        yield db.close();
-        // Retorne as paróquias encontradas como JSON
-        res.json(paroquias);
-    }
-    catch (error) {
-        console.error('Erro ao buscar paróquia:', error);
-        res.status(500).json({ error: 'Erro ao buscar paróquia' });
-    }
+const port = process.env.PORT || 3000;
+app.use(express_1.default.json());
+app.use((0, cors_1.default)({
+    origin: 'http://localhost:3001',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
 }));
-// Inicie o servidor
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+function start() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const db = yield (0, paroquia_1.openDatabaseConnection)();
+        // Rota para criar uma nova paróquia
+        app.post('/api/paroquias', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { NomeParoquia, Padres, CEP, LocalizacaoParoquia, Bairro, InformacoesAdicionais, EmailResponsavel } = req.body;
+                const newParoquia = {
+                    NomeParoquia,
+                    Padres,
+                    CEP,
+                    LocalizacaoParoquia,
+                    Bairro,
+                    InformacoesAdicionais,
+                    EmailResponsavel,
+                };
+                yield (0, paroquia_1.createParoquia)(db, newParoquia);
+                res.status(201).send('Paróquia criada com sucesso.');
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).send('Erro ao criar paróquia.');
+            }
+        }));
+        // Rota para buscar uma paróquia por nome
+        app.get('/api/paroquias', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { nome } = req.query;
+            if (!nome) {
+                return res.status(400).send('Parâmetro "nome" não fornecido.');
+            }
+            const paroquia = yield (0, paroquia_1.getParoquiaByName)(db, nome.toString());
+            if (paroquia) {
+                res.json(paroquia);
+            }
+            else {
+                res.status(404).send('Paróquia não encontrada.');
+            }
+        }));
+        app.listen(port, () => {
+            console.log(`Servidor está ouvindo na porta ${port}`);
+        });
+    });
+}
+start().catch((error) => {
+    console.error('Erro ao iniciar o servidor:', error);
 });

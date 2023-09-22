@@ -8,24 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const sqlite3 = require('sqlite3');
-const { open } = require('sqlite');
-const databasePath = './minha-paroquia-db.sqlite';
+exports.openDatabase = void 0;
+const sqlite3_1 = __importDefault(require("sqlite3"));
+const sqlite_1 = require("sqlite");
 function openDatabase() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const db = yield open({
-                filename: databasePath,
-                driver: sqlite3.Database,
+            const db = yield (0, sqlite_1.open)({
+                filename: './minha-paroquia-db.sqlite3',
+                driver: sqlite3_1.default.Database,
             });
-            console.log('Conexão com o banco de dados SQLite aberta com sucesso.');
+            console.log('Conexão com o banco de dados estabelecida com sucesso');
             return db;
         }
         catch (error) {
-            console.error('Erro ao abrir conexão com o banco de dados SQLite:', error);
+            console.error('Erro ao conectar com o banco de dados:', error);
             throw error;
         }
     });
 }
-exports.default = openDatabase;
+exports.openDatabase = openDatabase;
