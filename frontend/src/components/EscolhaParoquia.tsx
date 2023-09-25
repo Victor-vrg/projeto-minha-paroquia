@@ -1,33 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-//import { useNavigate } from 'react-router-dom';  para quando tiver mais paroquia com dados proprios//
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import ParoquiaModel from '../../../backend/src/models/paroquiaModel';
 
 import '../styles/minha-paroquia.css';
 
-function EscolhaParoquia() {
-  const [paroquia, setParoquia] = useState('');
-  const [sugestoes, setSugestoes] = useState<string[]>([]);
-//  const navigate = useNavigate();//
+const EscolhaParoquia: React.FC = () => {
+  const [paroquias, setParoquias] = useState<ParoquiaModel[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
 
-  const buscarSugestoes = (inputValue: string) => {
-    if (inputValue) {
-      axios
-        .get(`http://localhost:3000/api/paroquias?nome=${inputValue}`)
-        .then((response) => {
-          const nomesParoquias = response.data;
-          setSugestoes(nomesParoquias);
-        })
-        .catch((error) => {
-          console.error('Erro ao buscar nomes de paróquias:', error);
-        });
+  // Função para buscar sugestões de paróquias com base no texto de entrada
+  const fetchParoquias = async (searchText: string) => {
+    if (searchText.trim() === '') {
+      setParoquias([]);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`http://localhost:3001/api/paroquias?s=${searchText}`);
+      setParoquias(response.data);
+    } catch (error) {
+      console.error('Erro ao buscar sugestões de paróquias:', error);
     }
   };
 
   useEffect(() => {
-    buscarSugestoes(paroquia);
-  }, [paroquia]);
+    if (inputValue) {
+      fetchParoquias(inputValue);
+    } else {
+      setParoquias([]);
+    }
+  }, [inputValue]);
+
+  // Verifica se o valor inicial corresponde a uma opção disponível
+  const initialOption = paroquias.find((option) => option.NomeParoquia === inputValue);
 
   return (
     <div className="page-wrapper">
@@ -36,26 +43,16 @@ function EscolhaParoquia() {
           <h1>Escolha sua Paróquia</h1>
           <p>Digite o nome da sua Paróquia:</p>
           <Autocomplete
-            id="paroquia-autocomplete"
-            options={sugestoes}
-            freeSolo
-            onInputChange={(e, newValue) => {
-              setParoquia(newValue);
+            options={paroquias}
+            inputValue={inputValue}
+            onInputChange={(event, newInputValue) => {
+              setInputValue(newInputValue);
             }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Nome da Paróquia"
-                variant="outlined"
-              />
-            )}
+            getOptionLabel={(option) => option.NomeParoquia}
+            renderInput={(params) => <TextField {...params} label="Paróquia" variant="outlined" />}
+            value={initialOption || null} // Define o valor inicial com base na verificação
           />
           <button>Buscar</button>
-          <ul>
-            {sugestoes.map((sugestao, index) => (
-              <li key={index}>{sugestao}</li>
-            ))}
-          </ul>
           <p>
             Não encontrou sua paróquia?
             <a href="/paroquia-cadastro">Cadastre aqui</a>
@@ -64,6 +61,6 @@ function EscolhaParoquia() {
       </div>
     </div>
   );
-}
+};
 
 export default EscolhaParoquia;
