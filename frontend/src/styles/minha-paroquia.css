@@ -25,7 +25,7 @@ body {
     margin: 10px
   }
 
-  input .tagify-input  {
+  input  {
     width: 90%;
     padding: 10px;
     margin-bottom: 10px;

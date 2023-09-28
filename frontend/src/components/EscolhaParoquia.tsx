@@ -3,12 +3,17 @@ import axios from 'axios';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import ParoquiaModel from '../../../backend/src/models/paroquiaModel';
-
+import { useNavigate } from 'react-router-dom'; // Importe o useNavigate
 import '../styles/minha-paroquia.css';
 
-const EscolhaParoquia: React.FC = () => {
+interface EscolhaParoquiaProps {
+  setParoquiaSelecionada: React.Dispatch<React.SetStateAction<ParoquiaModel | null>>;
+}
+
+const EscolhaParoquia: React.FC<EscolhaParoquiaProps> = ({ setParoquiaSelecionada }) => {
   const [paroquias, setParoquias] = useState<ParoquiaModel[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const navigate = useNavigate(); // Use useNavigate em vez de useHistory
 
   // Função para buscar sugestões de paróquias com base no texto de entrada
   const fetchParoquias = async (searchText: string) => {
@@ -36,13 +41,20 @@ const EscolhaParoquia: React.FC = () => {
   // Verifica se o valor inicial corresponde a uma opção disponível
   const initialOption = paroquias.find((option) => option.NomeParoquia === inputValue);
 
+  // Função para redirecionar para a página principal da paróquia
+  const redirectToPaginaPrincipal = () => {
+    if (initialOption) {
+      navigate('/pagina-principal-paroquia'); // Use navigate em vez de history.push
+    }
+  };
+
   return (
     <div className="page-wrapper">
       <div className="content-wrapper">
         <div className="container">
           <h1>Escolha sua Paróquia</h1>
           <p>Digite o nome da sua Paróquia:</p>
-          <Autocomplete
+          <Autocomplete id='autocomplete'
             options={paroquias}
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {
@@ -52,7 +64,7 @@ const EscolhaParoquia: React.FC = () => {
             renderInput={(params) => <TextField {...params} label="Paróquia" variant="outlined" />}
             value={initialOption || null} // Define o valor inicial com base na verificação
           />
-          <button>Buscar</button>
+          <button onClick={redirectToPaginaPrincipal}>Buscar</button> {/* Adicione um evento de clique */}
           <p>
             Não encontrou sua paróquia?
             <a href="/paroquia-cadastro">Cadastre aqui</a>
@@ -64,3 +76,4 @@ const EscolhaParoquia: React.FC = () => {
 };
 
 export default EscolhaParoquia;
+
