@@ -9,7 +9,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import EventIcon from '@mui/icons-material/Event';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 
-
 const NavigationRail: React.FC = () => {
   const [open, setOpen] = useState(false);
 
@@ -19,11 +18,17 @@ const NavigationRail: React.FC = () => {
 
   return (
     <div className="navigation-drawer">
-      <IconButton onClick={toggleDrawer} className="menu-button">
-        <MenuIcon />
-      </IconButton>
       <Drawer anchor="left" open={open} onClose={toggleDrawer}>
-        <List>
+        <List
+          sx={{
+            width: 250,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+            height: '100%',
+          }}
+        >
           <ListItem button onClick={toggleDrawer}>
             <ListItemIcon>
               <EventIcon />
@@ -38,11 +43,14 @@ const NavigationRail: React.FC = () => {
           </ListItem>
         </List>
       </Drawer>
+      <IconButton
+        onClick={toggleDrawer}
+        className={`menu-button ${open ? 'menu-open' : ''}`}
+      >
+        <MenuIcon />
+      </IconButton>
     </div>
   );
 };
 
 export default NavigationRail;
-
-
-

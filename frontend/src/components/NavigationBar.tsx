@@ -21,12 +21,20 @@ const NavigationBar: React.FC = () => {
       }}
     >
       <Stack direction="column" alignItems="center">
-        <Button startIcon={<EventIcon />} size="small">
+        <Button
+          startIcon={<EventIcon />}
+          size="small"
+          sx={{ flexDirection: 'column', gap: '4px' }} // Adiciona espaçamento entre o ícone e o texto
+        >
           Eventos
         </Button>
       </Stack>
       <Stack direction="column" alignItems="center">
-        <Button startIcon={<FlightTakeoffIcon />} size="small">
+        <Button
+          startIcon={<FlightTakeoffIcon />}
+          size="small"
+          sx={{ flexDirection: 'column', gap: '4px' }} // Adiciona espaçamento entre o ícone e o texto
+        >
           Excursões
         </Button>
       </Stack>

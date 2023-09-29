@@ -1,9 +1,33 @@
 import React, { MouseEvent, useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, styled } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
-import '../styles/header.css';
 import NavigationRail from './NavigationRail';
+import '@fontsource/roboto/400.css';
+
+const MyAppBar = styled(AppBar)(({ theme }) => ({
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  zIndex: theme.zIndex.drawer + 1,
+  backgroundColor: '#fff',
+  boxShadow: 'none', // Remova a sombra para evitar que borre o conteúdo
+}));
+
+const MyTypography = styled(Typography)(({ theme }) => ({
+  fontSize: '24px',
+  lineHeight: '1.2',
+  color: '#333',
+  padding: '10px',
+  textAlign: 'center',
+  flexGrow: 1,
+}));
+
+const MyIconButton = styled(IconButton)(({ theme }) => ({
+  color: '#333',
+  marginRight: '20px',
+  cursor: 'pointer',
+}));
 
 const Header: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -18,11 +42,11 @@ const Header: React.FC = () => {
   };
 
   const handleLogout = () => {
-    // Implementar a lógica para sair
+    // Implemente a lógica para sair
   };
 
   const handleEditProfile = () => {
-    // Implementar aqui o redirecionamento para a página de edição de perfil (futuro)
+    // Implemente o redirecionamento para a página de edição de perfil (futuro)
   };
 
   useEffect(() => {
@@ -38,36 +62,34 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <AppBar id="meu-cabecalho" className="meu-cabecalho">
+    <MyAppBar>
       <Toolbar>
         {windowWidth >= 601 ? <NavigationRail /> : null}
-        <Typography variant="h6" className="meu-titulo">
+        <MyTypography variant="h6">
           Nome da Paróquia
-        </Typography>
-          <IconButton
-            onClick={handleMenuOpen}
-            edge="end"
-            color="inherit"
-            aria-label="menu do usuário"
-            className="meu-botao"
-          >
-            <AccountCircleIcon />
-          </IconButton>
+        </MyTypography>
+        <MyIconButton
+          onClick={handleMenuOpen}
+          edge="end"
+          color="inherit"
+          aria-label="menu do usuário"
+        >
+          <AccountCircleIcon />
+        </MyIconButton>
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
-          className="meu-menu"
         >
-          <MenuItem onClick={handleEditProfile} className="meu-item-menu">
+          <MenuItem onClick={handleEditProfile}>
             Editar Perfil
           </MenuItem>
-          <MenuItem onClick={handleLogout} className="meu-item-menu">
+          <MenuItem onClick={handleLogout}>
             Sair
           </MenuItem>
         </Menu>
       </Toolbar>
-    </AppBar>
+    </MyAppBar>
   );
 };
 
