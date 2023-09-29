@@ -10,8 +10,7 @@ import EventIcon from '@mui/icons-material/Event';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 
 
-
-const NavigationDrawer: React.FC = () => {
+const NavigationRail: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = () => {
@@ -43,7 +42,7 @@ const NavigationDrawer: React.FC = () => {
   );
 };
 
-export default NavigationDrawer;
+export default NavigationRail;
 
 
 

@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem } from '@mui/ma
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import '../styles/header.css';
-import NavigationDrawer from './NavigationDrawer';
+import NavigationRail from './NavigationRail';
 
 const Header: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -40,11 +40,10 @@ const Header: React.FC = () => {
   return (
     <AppBar id="meu-cabecalho" className="meu-cabecalho">
       <Toolbar>
-        {windowWidth >= 601 ? <NavigationDrawer /> : null}
+        {windowWidth >= 601 ? <NavigationRail /> : null}
         <Typography variant="h6" className="meu-titulo">
           Nome da Paróquia
         </Typography>
-        {windowWidth < 601 ? (
           <IconButton
             onClick={handleMenuOpen}
             edge="end"
@@ -54,7 +53,6 @@ const Header: React.FC = () => {
           >
             <AccountCircleIcon />
           </IconButton>
-        ) : null}
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
