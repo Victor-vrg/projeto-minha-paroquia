@@ -8,29 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const db_1 = require("../database/db"); // Importe a instância do banco de dados
-const router = (0, express_1.Router)();
-router.get('/paroquias', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const db_1 = require("../database/db");
+const EventosController_1 = require("../controllers/EventosController");
+const express_1 = __importDefault(require("express"));
+const router = express_1.default.Router();
+router.get('/destaque', EventosController_1.getEventosDestacados);
+router.get('/eventos', EventosController_1.getEventos);
+router.get('/eventos-recentes', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const searchText = req.query.s;
-        if (!searchText.trim()) {
-            res.status(400).json({ error: 'Texto de busca inválido' });
-            return;
-        }
-        const query = `
-      SELECT NomeParoquia
-      FROM Paroquias
-      WHERE NomeParoquia LIKE ?;
-    `;
-        const searchValue = `%${searchText}%`;
         const db = (0, db_1.getDatabaseInstance)();
-        const sugestoes = yield db.all(query, [searchValue]);
-        res.json(sugestoes);
+        console.log('Rota de eventos-recentes acessada');
+        const eventosRecentes = yield db.all('SELECT * FROM Eventos LIMIT 10');
+        console.log('Eventos recentes:', eventosRecentes);
+        res.json(eventosRecentes);
     }
     catch (error) {
-        console.error('Erro ao buscar sugestões de paróquias:', error);
+        console.error('Erro ao buscar eventos recentes:', error);
         res.status(500).json({ error: 'Erro interno do servidor' });
     }
 }));

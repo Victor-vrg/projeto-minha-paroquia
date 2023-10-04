@@ -75,4 +75,10 @@
 - **Token**: O valor do token.
 - **Expiracao**: O timestamp de expiração do token.
 
+## Tabela: ParticipacoesEventos
+**ID**: Um identificador único para cada participação.
+**UsuarioID**: Um ID de usuário associado à participação, com uma chave estrangeira que faz referência à tabela Usuarios.
+**EventoID**: Um ID de evento associado à participação, com uma chave estrangeira que faz referência à tabela Eventos.
+**Participacao**: A participação no evento (Sim, Talvez, Não).
+
 Este esquema de banco de dados inclui as atualizações nas tabelas e suas respectivas descrições. 

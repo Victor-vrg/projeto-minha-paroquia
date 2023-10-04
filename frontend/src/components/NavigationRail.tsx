@@ -33,13 +33,13 @@ const NavigationRail: React.FC = () => {
             <ListItemIcon>
               <EventIcon />
             </ListItemIcon>
-            <ListItemText primary="Eventos" />
+            {open && <ListItemText primary="Eventos" />}
           </ListItem>
           <ListItem button onClick={toggleDrawer}>
             <ListItemIcon>
               <FlightTakeoffIcon />
             </ListItemIcon>
-            <ListItemText primary="Excursões" />
+            {open && <ListItemText primary="Excursões" />}
           </ListItem>
         </List>
       </Drawer>

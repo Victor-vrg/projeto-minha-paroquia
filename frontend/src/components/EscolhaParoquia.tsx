@@ -13,7 +13,7 @@ interface EscolhaParoquiaProps {
 const EscolhaParoquia: React.FC<EscolhaParoquiaProps> = ({ setParoquiaSelecionada }) => {
   const [paroquias, setParoquias] = useState<ParoquiaModel[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
-  const navigate = useNavigate(); // Use useNavigate em vez de useHistory
+  const navigate = useNavigate(); 
 
   // Função para buscar sugestões de paróquias com base no texto de entrada
   const fetchParoquias = async (searchText: string) => {
@@ -44,7 +44,7 @@ const EscolhaParoquia: React.FC<EscolhaParoquiaProps> = ({ setParoquiaSelecionad
   // Função para redirecionar para a página principal da paróquia
   const redirectToPaginaPrincipal = () => {
     if (initialOption) {
-      navigate('/pagina-principal-paroquia'); // Use navigate em vez de history.push
+      navigate('/pagina-principal-paroquia'); 
     }
   };
 
