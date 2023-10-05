@@ -1,5 +1,4 @@
-
-export default interface EventosModel {
+interface EventosModel {
   ID: number;
   NomeEvento: string;
   DataInicio: string;
@@ -8,9 +7,10 @@ export default interface EventosModel {
   HoraFim: string;
   LocalizacaoEvento: string;
   DescricaoEvento: string;
-  CaminhoImagem: string;
+  CaminhoImagem: string | null; 
   TipoEvento: string;
   Participacao: 'Sim' | 'Talvez' | 'Não';
-  Destaque: number; 
+  Destaque: number;
   ParoquiaID: number;
 }
+export default EventosModel

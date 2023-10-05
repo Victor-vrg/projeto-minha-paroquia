@@ -3,7 +3,6 @@ import cors from 'cors';
 import paroquiasRoutes from './routes/paroquiaRoute';
 import eventosRoute from './routes/EventosRoute';
 import ExcursaoRoute from './routes/ExcursaoRoute';
-import { Database } from 'sqlite'; 
 import { initializeDatabase } from './database/db'; 
 
 const app = express();
