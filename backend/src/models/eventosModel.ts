@@ -7,7 +7,7 @@ interface EventosModel {
   HoraFim: string;
   LocalizacaoEvento: string;
   DescricaoEvento: string;
-  CaminhoImagem: string | null; 
+  CaminhoImagem: string ; 
   TipoEvento: string;
   Participacao: 'Sim' | 'Talvez' | 'Não';
   Destaque: number;

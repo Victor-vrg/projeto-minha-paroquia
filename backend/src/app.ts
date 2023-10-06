@@ -7,11 +7,12 @@ import { initializeDatabase } from './database/db';
 
 const app = express();
 const port = 3001;
+const path = require('path');
 
-
-// Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
 
 const startServer = async () => {
   try {

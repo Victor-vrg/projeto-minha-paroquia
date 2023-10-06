@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -9,22 +18,22 @@ const sqlite3_1 = __importDefault(require("sqlite3"));
 const path_1 = __importDefault(require("path"));
 const DATABASE_FILE = path_1.default.join(__dirname, '../basedeteste.sqlite3');
 exports.dbInstance = null;
-const initializeDatabase = async () => {
+const initializeDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        exports.dbInstance = await (0, sqlite_1.open)({
+        exports.dbInstance = yield (0, sqlite_1.open)({
             filename: DATABASE_FILE,
             driver: sqlite3_1.default.Database,
         });
         console.log('Conexão com o banco de dados SQLite3 estabelecida!');
-        await createTables();
-        await insertTestData();
+        yield createTables();
+        yield insertTestData();
         console.log('Dados de teste inseridos com sucesso!');
     }
     catch (error) {
         console.error('Erro ao conectar ao banco de dados:', error);
         throw error;
     }
-};
+});
 exports.initializeDatabase = initializeDatabase;
 const getDatabaseInstance = () => {
     if (!exports.dbInstance) {
@@ -33,12 +42,9 @@ const getDatabaseInstance = () => {
     return exports.dbInstance;
 };
 exports.getDatabaseInstance = getDatabaseInstance;
-const createTables = async () => {
+const createTables = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        await exports.dbInstance?.exec(`
-    PRAGMA foreign_keys = off;
-    BEGIN TRANSACTION;
-  
+        yield (exports.dbInstance === null || exports.dbInstance === void 0 ? void 0 : exports.dbInstance.exec(`
     CREATE TABLE IF NOT EXISTS Eventos (
         ID                INTEGER       PRIMARY KEY AUTOINCREMENT,
         NomeEvento        VARCHAR (255) NOT NULL,
@@ -180,10 +186,8 @@ const createTables = async () => {
         )
         REFERENCES ServicosComunitarios (ID) 
     );
-    COMMIT TRANSACTION;
-    PRAGMA foreign_keys = on;
-    `);
-        await exports.dbInstance?.exec(`
+    `));
+        yield (exports.dbInstance === null || exports.dbInstance === void 0 ? void 0 : exports.dbInstance.exec(`
     -- Índice: idx_data_inicio_evento
     CREATE INDEX IF NOT EXISTS idx_data_inicio_evento ON Eventos (
         DataInicio
@@ -238,22 +242,22 @@ const createTables = async () => {
     CREATE INDEX IF NOT EXISTS idx_usuario_participacao ON ParticipacoesEventos (
         UsuarioID
     );
-    `);
+    `));
     }
     catch (error) {
         console.error('Erro ao criar tabelas:', error);
         throw error;
     }
-};
-const insertTestData = async () => {
+});
+const insertTestData = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Inserir novos dados de teste- ja temos paroquia,eventos,serviços de testes!
-        await exports.dbInstance?.exec(`
-    `);
+        yield (exports.dbInstance === null || exports.dbInstance === void 0 ? void 0 : exports.dbInstance.exec(`
+    `));
         console.log('Dados de teste inseridos com sucesso!');
     }
     catch (error) {
         console.error('Erro ao inserir dados de teste:', error);
         throw error;
     }
-};
+});

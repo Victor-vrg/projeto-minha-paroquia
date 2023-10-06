@@ -37,9 +37,6 @@ export const getDatabaseInstance = (): Database<sqlite3.Database, sqlite3.Statem
 const createTables = async () => {
   try {
     await dbInstance?.exec(`
-    PRAGMA foreign_keys = off;
-    BEGIN TRANSACTION;
-  
     CREATE TABLE IF NOT EXISTS Eventos (
         ID                INTEGER       PRIMARY KEY AUTOINCREMENT,
         NomeEvento        VARCHAR (255) NOT NULL,
@@ -181,8 +178,6 @@ const createTables = async () => {
         )
         REFERENCES ServicosComunitarios (ID) 
     );
-    COMMIT TRANSACTION;
-    PRAGMA foreign_keys = on;
     `);
 
     

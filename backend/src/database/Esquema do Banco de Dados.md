@@ -1,84 +1,88 @@
-# Esquema do Banco de Dados
+# Estrutura do Banco de Dados
 
-## Tabela: Paroquias
-- **ID**: Um identificador único para cada paróquia.
-- **NomeParoquia**: O nome da paróquia, não pode ser nulo.
-- **Padres**: O nome dos padres da paróquia.
-- **CEP**: O Código de Endereçamento Postal (CEP) da paróquia, não pode ser nulo.
-- **LocalizacaoParoquia**: A localização física da paróquia.
+## Tabela Eventos
+- **ID**: Chave primária que identifica exclusivamente cada evento.
+- **NomeEvento**: O nome do evento.
+- **DataInicio**: Data de início do evento.
+- **DataFim**: Data de término do evento.
+- **HoraInicio**: Hora de início do evento.
+- **HoraFim**: Hora de término do evento.
+- **LocalizacaoEvento**: A localização do evento.
+- **DescricaoEvento**: Uma descrição textual do evento.
+- **CaminhoImagem**: O caminho para uma imagem relacionada ao evento.
+- **TipoEvento**: O tipo ou categoria do evento.
+- **Participacao**: Uma indicação da participação no evento, que pode ser "Sim", "Talvez" ou "Não".
+- **Destaque**: Um valor inteiro que indica se o evento é destacado (1 para destacado, 0 para não destacado).
+- **ParoquiaID**: Uma chave estrangeira que se relaciona com a tabela "Paroquias", representando a paróquia associada a este evento.
+
+## Tabela Eventos_ServicosComunitarios
+- **EventoID**: Chave estrangeira que se relaciona com a tabela "Eventos", representando o evento ao qual o serviço comunitário está vinculado.
+- **ServicoComunitarioID**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao evento.
+
+Esta tabela é uma tabela de junção que permite relacionar eventos a serviços comunitários em uma relação muitos-para-muitos.
+
+## Tabela Excursoes
+- **ID**: Chave primária que identifica exclusivamente cada excursão.
+- **NomeExcursao**: O nome da excursão.
+- **DescricaoExcursao**: Uma descrição textual da excursão.
+- **DataInicioExcursao**: Data de início da excursão.
+- **DataFimExcursao**: Data de término da excursão.
+- **HoraInicioExcursao**: Hora de início da excursão.
+- **HoraFimExcursao**: Hora de término da excursão.
+- **LocalizacaoExcursao**: A localização da excursão.
+- **PrecoExcursao**: O preço da excursão.
+- **VagasExcursao**: O número de vagas disponíveis para a excursão.
+- **ParoquiaID**: Uma chave estrangeira que se relaciona com a tabela "Paroquias", representando a paróquia associada à excursão.
+- **CaminhoImagem**: O caminho para uma imagem relacionada à excursão.
+- **Destaque**: Um valor inteiro que indica se a excursão é destacada (1 para destacada, 0 para não destacada).
+
+## Tabela Inscricoes
+- **ID**: Chave primária que identifica exclusivamente cada inscrição.
+- **UsuarioID**: Chave estrangeira que se relaciona com a tabela "Usuarios", representando o usuário que fez a inscrição.
+- **ServicoComunitarioID**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário para o qual a inscrição foi feita.
+- **DataInscricao**: Data em que a inscrição foi feita.
+
+## Tabela Paroquias
+- **ID**: Chave primária que identifica exclusivamente cada paróquia.
+- **NomeParoquia**: O nome da paróquia.
+- **Padres**: Os padres associados à paróquia.
+- **CEP**: Código de Endereçamento Postal da paróquia.
+- **LocalizacaoParoquia**: A localização geográfica da paróquia.
 - **Bairro**: O bairro onde a paróquia está localizada.
 - **InformacoesAdicionais**: Informações adicionais sobre a paróquia.
-- **EmailResponsavel**: O endereço de e-mail do responsável pela paróquia, não pode ser nulo.
+- **EmailResponsavel**: O endereço de e-mail do responsável pela paróquia.
 
-## Tabela: ServicosComunitarios
-- **ID**: Um identificador único para cada serviço comunitário.
-- **ServicoComunitario**: O nome do serviço comunitário.
-- **DescricaoServico**: A descrição do serviço comunitário.
+## Tabela ParticipacoesEventos
+- **ID**: Chave primária que identifica exclusivamente cada participação em evento.
+- **UsuarioID**: Chave estrangeira que se relaciona com a tabela "Usuarios", representando o usuário que está participando do evento.
+- **EventoID**: Chave estrangeira que se relaciona com a tabela "Eventos", representando o evento em que o usuário está participando.
+- **Participacao**: Uma indicação da participação no evento, que pode ser "Sim", "Talvez" ou "Não".
+
+## Tabela ServicosComunitarios
+- **ID**: Chave primária que identifica exclusivamente cada serviço comunitário.
+- **ServicoComunitario**: O nome ou tipo de serviço comunitário.
+- **DescricaoServico**: Uma descrição textual do serviço comunitário.
 - **ObjetivosServico**: Os objetivos do serviço comunitário.
 - **PublicoAlvoServico**: O público-alvo do serviço comunitário.
-- **TipoServicoComunitario**: O tipo de serviço comunitário (pastoral, grupo, voluntariado, etc.).
-- **ParoquiaID**: O ID da paróquia associada ao serviço comunitário.
-- **Ativo**: Um campo booleano que indica se o serviço comunitário está ativo.
+- **TipoServicoComunitario**: O tipo ou categoria do serviço comunitário.
+- **ParoquiaID**: Uma chave estrangeira que se relaciona com a tabela "Paroquias", representando a paróquia à qual o serviço comunitário está associado.
+- **Ativo**: Um valor booleano que indica se o serviço comunitário está ativo ou não.
 
-## Tabela: Usuarios
-- **ID**: Um identificador único para cada usuário.
-- **NomeCompleto**: O nome completo do usuário, não pode ser nulo.
-- **Email**: O endereço de e-mail do usuário, não pode ser nulo.
+## Tabela Tokens
+- **ID**: Chave primária que identifica exclusivamente cada token.
+- **UserID**: Chave estrangeira que se relaciona com a tabela "Usuarios", representando o usuário associado ao token.
+- **Token**: O token em si.
+- **Expiracao**: A data e hora de expiração do token.
+
+## Tabela Usuarios
+- **ID**: Chave primária que identifica exclusivamente cada usuário.
+- **NomeCompleto**: O nome completo do usuário.
+- **Email**: O endereço de e-mail do usuário.
 - **Telefone**: O número de telefone do usuário.
 - **Bairro**: O bairro onde o usuário reside.
 - **DataNascimento**: A data de nascimento do usuário.
-- **ParoquiaMaisFrequentada**: A paróquia mais frequentada pelo usuário, com uma chave estrangeira que faz referência à tabela `Paroquias`.
+- **ParoquiaMaisFrequentada**: Chave estrangeira que se relaciona com a tabela "Paroquias", representando a paróquia mais frequentada pelo usuário.
 - **NivelAcesso**: O nível de acesso do usuário.
-- **IDServicoComunitario**: O ID do serviço comunitário associado ao usuário, com uma chave estrangeira que faz referência à tabela `ServicosComunitarios`.
-- **SenhaHash**: A senha criptografada do usuário, não pode ser nulo.
-- **Cargo**: O cargo do usuário em um serviço comunitário específico.
-
-## Tabela: Eventos
-- **ID**: Um identificador único para cada evento.
-- **NomeEvento**: O nome do evento, não pode ser nulo.
-- **DataInicio**: A data de início do evento.
-- **DataFim**: A data de término do evento.
-- **HoraInicio**: A hora de início do evento.
-- **HoraFim**: A hora de término do evento.
-- **LocalizacaoEvento**: A localização física do evento.
-- **DescricaoEvento**: A descrição do evento.
-- **CaminhoImagem**: O caminho para a imagem relacionada ao evento.
-- **TipoEvento**: O tipo de evento.
-- **Participacao**: A participação no evento (Sim, Talvez, Não).
-
-## Tabela: Eventos_ServicosComunitarios
-- **EventoID**: Um ID de evento associado a um serviço comunitário, com uma chave primária composta juntamente com `ServicoComunitarioID`.
-- **ServicoComunitarioID**: Um ID de serviço comunitário associado a um evento.
-
-## Tabela: Excursoes
-- **ID**: Um identificador único para cada excursão.
-- **NomeExcursao**: O nome da excursão.
-- **DescricaoExcursao**: A descrição da excursão.
-- **DataInicioExcursao**: A data de início da excursão.
-- **DataFimExcursao**: A data de término da excursão.
-- **HoraInicioExcursao**: A hora de início da excursão.
-- **HoraFimExcursao**: A hora de término da excursão.
-- **LocalizacaoExcursao**: A localização física da excursão.
-- **PrecoExcursao**: O preço da excursão.
-- **VagasExcursao**: O número de vagas disponíveis na excursão.
-- **ParoquiaID**: O ID da paróquia associada à excursão.
-
-## Tabela: Inscricoes
-- **ID**: Um identificador único para cada inscrição.
-- **UsuarioID**: Um ID de usuário associado à inscrição.
-- **ServicoComunitarioID**: Um ID de serviço comunitário associado à inscrição.
-- **DataInscricao**: A data de inscrição.
-
-## Tabela: Tokens
-- **ID**: Um identificador único para cada token.
-- **UserID**: Um ID de usuário associado ao token, com uma chave estrangeira que faz referência à tabela `Usuarios`.
-- **Token**: O valor do token.
-- **Expiracao**: O timestamp de expiração do token.
-
-## Tabela: ParticipacoesEventos
-**ID**: Um identificador único para cada participação.
-**UsuarioID**: Um ID de usuário associado à participação, com uma chave estrangeira que faz referência à tabela Usuarios.
-**EventoID**: Um ID de evento associado à participação, com uma chave estrangeira que faz referência à tabela Eventos.
-**Participacao**: A participação no evento (Sim, Talvez, Não).
-
-Este esquema de banco de dados inclui as atualizações nas tabelas e suas respectivas descrições. 
+- **IDServicoComunitario**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao usuário.
+- **SenhaHash**: A senha do usuário, armazenada como um hash.
+- **Cargo**: O cargo do usuário.
