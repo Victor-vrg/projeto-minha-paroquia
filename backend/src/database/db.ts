@@ -2,7 +2,7 @@ import { open, Database } from 'sqlite';
 import sqlite3 from 'sqlite3';
 import path from 'path';
 
-const DATABASE_FILE = path.join(__dirname, '../baseteste.sqlite3');
+const DATABASE_FILE = path.join(__dirname, '../basedeteste.sqlite3');
 
 export let dbInstance: Database<sqlite3.Database, sqlite3.Statement> | null = null;
 
@@ -247,22 +247,16 @@ const createTables = async () => {
     throw error;
   }
 };
-
 const insertTestData = async () => {
-  try {
-    
-    await dbInstance?.exec(`
-      INSERT INTO Eventos (NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, Destaque)
-      VALUES ('Evento de Teste 1', '2023-09-26', '2023-09-27', '10:00:00', '12:00:00', 1);
-
-      INSERT INTO Eventos (NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, Destaque)
-      VALUES ('Evento de Teste 2', '2023-09-28', '2023-09-29', '14:00:00', '16:00:00', 0);
+    try {
+      // Inserir novos dados de teste- ja temos paroquia,eventos,serviços de testes!
+      await dbInstance?.exec(`
     `);
-
-    
-
-  } catch (error) {
-    console.error('Erro ao inserir dados de teste:', error);
-    throw error;
-  }
-};
+  
+      console.log('Dados de teste inseridos com sucesso!');
+  
+    } catch (error) {
+      console.error('Erro ao inserir dados de teste:', error);
+      throw error;
+    }
+  };

@@ -7,7 +7,7 @@ exports.getDatabaseInstance = exports.initializeDatabase = exports.dbInstance = 
 const sqlite_1 = require("sqlite");
 const sqlite3_1 = __importDefault(require("sqlite3"));
 const path_1 = __importDefault(require("path"));
-const DATABASE_FILE = path_1.default.join(__dirname, '../baseteste.sqlite3');
+const DATABASE_FILE = path_1.default.join(__dirname, '../basedeteste.sqlite3');
 exports.dbInstance = null;
 const initializeDatabase = async () => {
     try {
@@ -247,13 +247,10 @@ const createTables = async () => {
 };
 const insertTestData = async () => {
     try {
+        // Inserir novos dados de teste- ja temos paroquia,eventos,serviços de testes!
         await exports.dbInstance?.exec(`
-      INSERT INTO Eventos (NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, Destaque)
-      VALUES ('Evento de Teste 1', '2023-09-26', '2023-09-27', '10:00:00', '12:00:00', 1);
-
-      INSERT INTO Eventos (NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, Destaque)
-      VALUES ('Evento de Teste 2', '2023-09-28', '2023-09-29', '14:00:00', '16:00:00', 0);
     `);
+        console.log('Dados de teste inseridos com sucesso!');
     }
     catch (error) {
         console.error('Erro ao inserir dados de teste:', error);
