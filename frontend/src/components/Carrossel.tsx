@@ -37,11 +37,19 @@ const Carrossel: React.FC<CarrosselProps> = ({ titulo, eventos }) => {
       <h2 className="carrossel-titulo">{titulo}</h2>
       <Swiper
   spaceBetween={16}
-  slidesPerView={3}
+  slidesPerView={1} 
   navigation
   pagination={{ clickable: true }}
   onSlideChange={(swiper: SwiperCore) => {
     setActiveSlide(swiper.activeIndex);
+  }}
+  breakpoints={{
+    600: {
+      slidesPerView: 2, 
+    },
+    840: {
+      slidesPerView: 3, 
+    },
   }}
       >
         {eventos.map((evento, index) => (
@@ -55,7 +63,7 @@ const Carrossel: React.FC<CarrosselProps> = ({ titulo, eventos }) => {
               }}
             >
               <img
-                 src={`http://localhost:3001/public${evento.CaminhoImagem}`}
+                 src={evento.CaminhoImagem}
                 alt={evento.NomeEvento}
                 className="carrossel-imagem"
               />

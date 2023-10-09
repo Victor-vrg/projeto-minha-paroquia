@@ -1,62 +1,80 @@
 .carrossel-container {
-    margin-top: 20px;
-    margin-left: 14px;
-    margin-right: 14px;
-    margin-bottom: 20px;
-  }
-  
-  .carrossel-titulo {
-    text-align: left;
-    font-size: 24px;
-    margin-bottom: 16px;
-  }
-  
+  margin: 14px;
+}
+
+.carrossel-titulo {
+  text-align: left;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.carrossel-item {
+  display: flex;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  height: 320px; 
+}
+
+.carrossel-imagem {
+  width: 280px; 
+  height: 100%;
+  object-fit: cover;
+}
+
+.carrossel-info {
+  flex: 1;
+  padding: 16px;
+}
+
+.carrossel-info h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.carrossel-descricao {
+  display: none;
+  padding-top: 16px;
+  font-size: 16px;
+}
+
+.active .carrossel-descricao {
+  display: block;
+}
+
+
+.participacao-button {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.participacao-button:hover {
+  background-color: #0056b3;
+}
+
+/* Estilo para telas entre 600px e 839px */
+@media screen and (min-width: 600px) and (max-width: 839px) {
   .carrossel-item {
-    display: flex;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
+    height: 360px; 
   }
-  
   .carrossel-imagem {
-    width: 280px;
-    height: 100%;
-   /** object-fit: cover; **/
+    width: 300px; 
   }
-  
-  .carrossel-info {
-    flex: 1;
-    padding: 16px;
+}
+
+/* Estilo para telas maiores que 839px */
+@media screen and (min-width: 840px) {
+  .carrossel-item {
+    height: 440px; 
   }
-  
-  .carrossel-info h3 {
-    font-size: 20px;
-    margin-bottom: 8px;
+  .carrossel-imagem {
+    width: 320px; 
   }
-  
-  .carrossel-descricao {
-    display: none;
-    padding-top: 16px;
-    font-size: 16px;
-  }
-  
-  .active .carrossel-descricao {
-    display: block;
-  }
-  
-  .participacao-button {
-    margin-top: 16px;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .participacao-button:hover {
-    background-color: #0056b3;
-  }
-  
+}
