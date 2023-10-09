@@ -245,7 +245,8 @@ const createTables = async () => {
 const insertTestData = async () => {
     try {
       // Inserir novos dados de teste- ja temos paroquia,eventos,serviços de testes!
-    `INSERT INTO Paroquias (ID, NomeParoquia, Padres, CEP, LocalizacaoParoquia, Bairro, InformacoesAdicionais, EmailResponsavel) VALUES (1, 'Paroquia Teste', 'Padre Teste', '12345-678', 'Localização da Paroquia Teste', 'Bairro Teste', 'Informações adicionais da Paroquia Teste', 'email@teste.com');
+      await dbInstance?.exec(`
+      INSERT INTO Paroquias (ID, NomeParoquia, Padres, CEP, LocalizacaoParoquia, Bairro, InformacoesAdicionais, EmailResponsavel) VALUES (1, 'Paroquia Teste', 'Padre Teste', '12345-678', 'Localização da Paroquia Teste', 'Bairro Teste', 'Informações adicionais da Paroquia Teste', 'email@teste.com');
     INSERT INTO Eventos (ID, NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, LocalizacaoEvento, DescricaoEvento, CaminhoImagem, TipoEvento, Participacao, Destaque) VALUES (1, 'Missa da Manhã', '2023-09-28', '2023-09-28', '08:00:00', '09:30:00', 'Igreja Paroquial', 'Missa matinal de domingo.', '/img/eventos/missa.jpg', 'Missa', 'Sim', 1);
 INSERT INTO Eventos (ID, NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, LocalizacaoEvento, DescricaoEvento, CaminhoImagem, TipoEvento, Participacao, Destaque) VALUES (2, 'Missa da Noite', '2023-09-28', '2023-09-28', '18:00:00', '19:30:00', 'Igreja Paroquial', 'Missa noturna de domingo.', NULL, 'Missa', 'Talvez', 0);
 INSERT INTO Eventos (ID, NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, LocalizacaoEvento, DescricaoEvento, CaminhoImagem, TipoEvento, Participacao, Destaque) VALUES (3, 'Catequese Infantil', '2023-09-29', '2023-09-29', '14:00:00', '16:00:00', 'Salão Paroquial', 'Aula de catequese para crianças.', '/img/eventos/catequese.jpg', 'Catequese', 'Sim', 1);
@@ -265,8 +266,6 @@ INSERT INTO Eventos (ID, NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, L
 INSERT INTO Eventos (ID, NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, LocalizacaoEvento, DescricaoEvento, CaminhoImagem, TipoEvento, Participacao, Destaque) VALUES (17, 'Limpeza da Igreja', '2023-10-07', '2023-10-07', '09:00:00', '12:00:00', 'Igreja Paroquial', 'Voluntários para limpar a igreja.', NULL, 'Serviço', 'Talvez', 0);
 INSERT INTO Eventos (ID, NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, LocalizacaoEvento, DescricaoEvento, CaminhoImagem, TipoEvento, Participacao, Destaque) VALUES (18, 'Grupo de Oração para Jovens', '2023-10-10', '2023-10-10', '20:00:00', '21:30:00', 'Salão Paroquial', 'Encontro de oração para jovens.', NULL, 'Encontro', 'Sim', 0);
 INSERT INTO Eventos (ID, NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, LocalizacaoEvento, DescricaoEvento, CaminhoImagem, TipoEvento, Participacao, Destaque) VALUES (19, 'Retiro Espiritual', '2023-10-15', '2023-10-16', '09:00:00', '16:00:00', 'Local de Retiro', 'Retiro espiritual de fim de semana.', NULL, 'Retiro', 'Não', 0);
-`;
-      await dbInstance?.exec(`
     `);
   
       console.log('Dados de teste inseridos com sucesso!');
