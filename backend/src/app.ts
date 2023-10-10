@@ -20,7 +20,6 @@ const startServer = async () => {
 
     // Roteadores
     app.use('/api', paroquiasRoutes);
-    app.use('/eventos/eventos-recentes', eventosRoute);
     app.use('/destaque', eventosRoute);
     app.use('/eventos', eventosRoute);
     app.use('/destaqueEx', ExcursaoRoute);

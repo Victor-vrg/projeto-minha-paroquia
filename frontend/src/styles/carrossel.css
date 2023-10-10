@@ -1,42 +1,71 @@
+* {
+  font-family: "Roboto Flex", sans-serif;
+}
+
 .carrossel-container {
-  margin: 14px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  margin-left: 14px;
+  margin-right: 14px;
+  min-height: 70vh;
+  max-height: 80vh;
 }
 
 .carrossel-titulo {
   text-align: left;
   font-size: 24px;
   margin-bottom: 16px;
+  margin-left: 14px;
 }
 
 .carrossel-item {
   display: flex;
+  width: auto;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
-  height: 320px; 
+  padding: 10px;
 }
 
 .carrossel-imagem {
-  width: 280px; 
-  height: 100%;
+  width: 50%; 
   object-fit: cover;
 }
 
 .carrossel-info {
-  flex: 1;
-  padding: 16px;
+  display: flex;
+  margin: 10px;
+  flex-direction: column;
+
+  width: 50%; 
+}
+
+.carrossel-info p {
+  font-size: 15px;
+  margin-bottom: 8px;
 }
 
 .carrossel-info h3 {
   font-size: 20px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.mais-informacoes {
+  font-size: 14px;
+  color: #007bff; 
+  cursor: pointer;
+}
+
+.mais-informacoes:hover {
+  text-decoration: underline;
 }
 
 .carrossel-descricao {
   display: none;
-  padding-top: 16px;
+  padding-top: 10px;
+  padding-bottom: 16px;
   font-size: 16px;
 }
 
@@ -44,9 +73,8 @@
   display: block;
 }
 
-
 .participacao-button {
-  margin-top: 16px;
+  margin-top: auto; 
   padding: 8px 16px;
   background-color: #007bff;
   color: #fff;
@@ -58,23 +86,35 @@
 .participacao-button:hover {
   background-color: #0056b3;
 }
-
-/* Estilo para telas entre 600px e 839px */
-@media screen and (min-width: 600px) and (max-width: 839px) {
-  .carrossel-item {
-    height: 360px; 
-  }
-  .carrossel-imagem {
-    width: 300px; 
+@media screen and ( max-width: 450px) {
+  .swiper-button-next, .swiper-button-prev {
+    display: none !important;
   }
 }
 
-/* Estilo para telas maiores que 839px */
-@media screen and (min-width: 840px) {
+@media screen and (min-width: 600px) and (max-width: 839px) {
   .carrossel-item {
-    height: 440px; 
+    min-height: 400px;
   }
   .carrossel-imagem {
-    width: 320px; 
+    width: 50%;
+  }
+  .carrossel-info {
+    width: 50%;
+  }
+}
+
+@media screen and (min-width: 840px) {
+  .carrossel-imagem {
+    width: 50%;
+  }
+  .carrossel-info {
+    width: 50%;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .carrossel-item {
+    height: 380px;
   }
 }

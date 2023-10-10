@@ -33,16 +33,4 @@ export const getEventos = async (req: Request, res: Response) => {
   }
 };
 
-export const getEventosrecentes = async (req: Request, res: Response) => {
-  try {
-    const db = getDatabaseInstance();
-    const eventos = await db.all<EventosModel[]>(
-      'SELECT * FROM Eventos ORDER BY DataInicio, HoraInicio'
-    );
-    res.json(eventos);
-    console.log('Eventos recentes:', eventos);
-  } catch (error) {
-    console.error('Erro ao buscar eventos recentes:', error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
-  }
-};
+

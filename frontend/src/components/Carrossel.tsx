@@ -36,21 +36,21 @@ const Carrossel: React.FC<CarrosselProps> = ({ titulo, eventos }) => {
     <div className="carrossel-container">
       <h2 className="carrossel-titulo">{titulo}</h2>
       <Swiper
-  spaceBetween={16}
-  slidesPerView={1} 
-  navigation
-  pagination={{ clickable: true }}
-  onSlideChange={(swiper: SwiperCore) => {
-    setActiveSlide(swiper.activeIndex);
-  }}
-  breakpoints={{
-    600: {
-      slidesPerView: 2, 
-    },
-    840: {
-      slidesPerView: 3, 
-    },
-  }}
+        spaceBetween={16}
+        slidesPerView={1}
+        navigation
+        pagination={{ clickable: true }}
+        onSlideChange={(swiper: SwiperCore) => {
+          setActiveSlide(swiper.activeIndex);
+        }}
+        breakpoints={{
+          600: {
+            slidesPerView: 2,
+          },
+          840: {
+            slidesPerView: 3,
+          },
+        }}
       >
         {eventos.map((evento, index) => (
           <SwiperSlide key={evento.ID}>
@@ -63,17 +63,33 @@ const Carrossel: React.FC<CarrosselProps> = ({ titulo, eventos }) => {
               }}
             >
               <img
-                 src={evento.CaminhoImagem}
+                src={evento.CaminhoImagem}
                 alt={evento.NomeEvento}
                 className="carrossel-imagem"
               />
-              <div className="carrossel-info">
+              <div
+                className={`carrossel-info ${
+                  index === activeSlide ? 'expanded' : ''
+                }`}
+              >
                 <h3>{evento.NomeEvento}</h3>
-                <p>{evento.DataInicio} {evento.DataFim} {evento.HoraInicio} {evento.HoraInicio}</p>
-                <p>{evento.LocalizacaoEvento}</p>
+                <p>
+                  <strong>Data:</strong> {formatarData(evento.DataInicio, evento.DataFim)}
+                </p>
+                <p>
+                  <strong>Horário:</strong> {formatarHora(evento.HoraInicio)} até {formatarHora(evento.HoraFim)}
+                </p>
+                <p>
+                  <strong>Localização:</strong> {evento.LocalizacaoEvento}
+                </p>
+                {index !== activeSlide && (
+                  <p className="mais-informacoes">Para mais informações, clique aqui</p>
+                )}
                 {index === activeSlide && (
                   <div className="carrossel-descricao">
-                    <p>{evento.DescricaoEvento}</p>
+                    <p>
+                      <strong>Detalhes:</strong> {evento.DescricaoEvento}
+                    </p>
                     <button className="participacao-button">
                       Participação: {evento.Participacao}
                     </button>
@@ -87,5 +103,43 @@ const Carrossel: React.FC<CarrosselProps> = ({ titulo, eventos }) => {
     </div>
   );
 };
+
+function formatarData(dataInicio: string, dataFim: string) {
+  const dataInicioObj = new Date(dataInicio);
+  const dataFimObj = new Date(dataFim);
+
+  if (dataInicioObj.toDateString() === dataFimObj.toDateString()) {
+    // Mesma data de início e fim
+    return `${formatarDiaSemana(dataInicioObj)}, ${formatarDataCompleta(dataInicioObj)}`;
+  } else {
+    // Diferentes datas de início e fim
+    return `${formatarDiaSemana(dataInicioObj)}, ${formatarDataCompleta(dataInicioObj)} - ${formatarDataCompleta(dataFimObj)}`;
+  }
+}
+
+function formatarHora(hora: string) {
+  const partes = hora.split(':');
+  const horas = parseInt(partes[0], 10);
+  const minutos = parseInt(partes[1], 10);
+
+  // Abreviação das horas
+  const periodo = horas >= 12 ? 'PM' : 'AM';
+  const horaAbreviada = horas > 12 ? horas - 12 : horas;
+  const minutosFormatados = minutos.toString().padStart(2, '0');
+
+  return `${horaAbreviada}:${minutosFormatados} ${periodo}`;
+}
+
+function formatarDiaSemana(data: Date) {
+  const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+  return diasSemana[data.getDay()];
+}
+
+function formatarDataCompleta(data: Date) {
+  const dia = data.getDate().toString().padStart(2, '0');
+  const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+  const ano = data.getFullYear();
+  return `${dia}-${mes}-${ano}`;
+}
 
 export default Carrossel;

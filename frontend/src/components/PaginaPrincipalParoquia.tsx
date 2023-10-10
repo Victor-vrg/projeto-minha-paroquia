@@ -15,7 +15,7 @@ const PaginaPrincipalParoquia: React.FC<PaginaPrincipalParoquiaProps> = ({ paroq
   const [eventos, setEventos] = useState<EventosModel[]>([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/eventos/destaque') 
+    axios.get('http://localhost:3001/eventos/eventos') 
       .then((response) => {
         setEventos(response.data);
       })
