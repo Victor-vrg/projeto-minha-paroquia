@@ -2,7 +2,6 @@ import React, { useState} from "react";
 import "./styles/minha-paroquia.css";
 import EscolhaParoquia from "./components/EscolhaParoquia";
 import PaginaPrincipalParoquia from "./components/PaginaPrincipalParoquia";
-import Footer from "./components/footer";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ParoquiaModel from "../../backend/src/models/paroquiaModel";
 
@@ -32,7 +31,6 @@ function App() {
             }
           />
         </Routes>
-        <Footer />
       </div>
     </BrowserRouter>
   );

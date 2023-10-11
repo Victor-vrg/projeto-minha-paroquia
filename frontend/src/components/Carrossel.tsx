@@ -33,6 +33,7 @@ const Carrossel: React.FC<CarrosselProps> = ({ titulo, eventos }) => {
   const [activeSlide, setActiveSlide] = useState<number | undefined>(undefined);
 
   return (
+    <div className='carrossel-background'>
     <div className="carrossel-container">
       <h2 className="carrossel-titulo">{titulo}</h2>
       <Swiper
@@ -100,6 +101,7 @@ const Carrossel: React.FC<CarrosselProps> = ({ titulo, eventos }) => {
           </SwiperSlide>
         ))}
       </Swiper>
+    </div>
     </div>
   );
 };

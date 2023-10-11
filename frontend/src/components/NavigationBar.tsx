@@ -16,7 +16,7 @@ const NavigationBar: React.FC = () => {
         alignItems: 'center',
         zIndex: 1000,
         '@media (min-width: 601px)': {
-          display: 'none', // Oculta o NavigationBar em telas maiores ou iguais a 601dp
+          display: 'none', 
         },
       }}
     >
@@ -24,7 +24,7 @@ const NavigationBar: React.FC = () => {
         <Button
           startIcon={<EventIcon />}
           size="small"
-          sx={{ flexDirection: 'column', gap: '4px' }} // Adiciona espaçamento entre o ícone e o texto
+          sx={{ flexDirection: 'column', gap: '4px' }} 
         >
           Eventos
         </Button>
@@ -33,7 +33,7 @@ const NavigationBar: React.FC = () => {
         <Button
           startIcon={<FlightTakeoffIcon />}
           size="small"
-          sx={{ flexDirection: 'column', gap: '4px' }} // Adiciona espaçamento entre o ícone e o texto
+          sx={{ flexDirection: 'column', gap: '4px' }} 
         >
           Excursões
         </Button>

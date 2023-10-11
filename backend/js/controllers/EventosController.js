@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEventosrecentes = exports.getEventos = exports.getEventosDestacados = void 0;
+exports.getEventos = exports.getEventosDestacados = void 0;
 const db_1 = require("../database/db");
 const getEventosDestacados = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -37,16 +37,3 @@ const getEventos = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getEventos = getEventos;
-const getEventosrecentes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const db = (0, db_1.getDatabaseInstance)();
-        const eventos = yield db.all('SELECT * FROM Eventos ORDER BY DataInicio, HoraInicio');
-        res.json(eventos);
-        console.log('Eventos recentes:', eventos);
-    }
-    catch (error) {
-        console.error('Erro ao buscar eventos recentes:', error);
-        res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-});
-exports.getEventosrecentes = getEventosrecentes;

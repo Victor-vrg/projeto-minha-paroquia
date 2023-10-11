@@ -5,13 +5,11 @@ import NavigationRail from './NavigationRail';
 import '@fontsource/roboto/400.css';
 
 const MyAppBar = styled(AppBar)(({ theme }) => ({
-  position: 'fixed',
   top: 0,
-  left: 0,
-  right: 0,
-  zIndex: theme.zIndex.drawer + 1,
+  zIndex: 2,
   backgroundColor: '#fff',
-  boxShadow: 'none', // Remova a sombra para evitar que borre o conteúdo
+  boxShadow: 'none', 
+  marginBottom: 10,
 }));
 
 const MyTypography = styled(Typography)(({ theme }) => ({
@@ -62,7 +60,7 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <MyAppBar>
+    <MyAppBar className='header-bar'>
       <Toolbar>
         {windowWidth >= 601 ? <NavigationRail /> : null}
         <MyTypography variant="h6">

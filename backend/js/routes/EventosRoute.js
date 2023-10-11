@@ -8,5 +8,4 @@ const EventosController_1 = require("../controllers/EventosController");
 const router = express_1.default.Router();
 router.get('/destaque', EventosController_1.getEventosDestacados);
 router.get('/eventos', EventosController_1.getEventos);
-router.get('/eventos-recentes', EventosController_1.getEventosrecentes);
 exports.default = router;
