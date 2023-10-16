@@ -1,5 +1,6 @@
 .header {
   height: 64px;
+  padding-bottom: 10px;
 }
 
 .header-bar {
@@ -31,6 +32,12 @@
 .MuiDrawer-paper {
   background-color: #007aff; /* Cor de fundo do Drawer */
   margin-top: 64px; /* Espaço entre o cabeçalho e o Drawer */
+}
+
+@media screen and ( max-width: 600px) {
+  .MuiDrawer-paper {
+    margin-top: 56px;
+  }
 }
 
 .MuiDrawer-paper .MuiList-root {

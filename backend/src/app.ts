@@ -20,10 +20,13 @@ const startServer = async () => {
 
     // Roteadores
     app.use('/api', paroquiasRoutes);
+    app.use('/paroquias-nome', paroquiasRoutes);
+    app.use('/paroquias-cep-nome', paroquiasRoutes);
     app.use('/destaque', eventosRoute);
     app.use('/eventos', eventosRoute);
     app.use('/destaqueEx', ExcursaoRoute);
     app.use('/excursao', ExcursaoRoute);
+  
 
     app.listen(port, () => {
       console.log(`Servidor rodando na porta ${port}`);
