@@ -29,18 +29,19 @@ export const obterSugestoesParoquias = async (req: Request, res: Response): Prom
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
-// obter dado da paroquia escolhida pelo usuario para enviar informações sobre ela para componente entreemcontato
+
 export const obterParoquiaPorNome = async (req: Request, res: Response): Promise<void> => {
   try {
-    const paroquiaNome = req.params.nomeParoquia as string;
+    const nomeParoquia = req.params.nomeParoquia as string;
+
     const query = `
-    SELECT *
-    FROM Paroquias
-    WHERE NomeParoquia = ?;;
+      SELECT *
+      FROM Paroquias
+      WHERE NomeParoquia = ?;
     `;
 
     const db = getDatabaseInstance();
-    const paroquia = await db.get(query, [paroquiaNome]);
+    const paroquia = await db.get(query, [nomeParoquia]);
 
     if (paroquia) {
       res.json(paroquia);
@@ -52,25 +53,3 @@ export const obterParoquiaPorNome = async (req: Request, res: Response): Promise
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
-  export const obterCEPParoquiaPorNome = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const paroquiaID = req.params.id as string;
-      const query = `
-        SELECT CEP
-        FROM Paroquias
-        WHERE NomeParoquia = ?;
-      `;
-  
-      const db = getDatabaseInstance();
-      const resultado = await db.get(query, [paroquiaID]);
-  
-      if (resultado) {
-        res.json({ CEP: resultado.CEP });
-      } else {
-        res.status(404).json({ error: 'Paróquia não encontrada' });
-      }
-    } catch (error) {
-      console.error('Erro ao buscar CEP da paróquia:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-  };

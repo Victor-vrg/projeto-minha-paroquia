@@ -18,7 +18,7 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
   const [enviado, setEnviado] = useState(false);
 
   const [paroquiaInfo, setParoquiaInfo] = useState<ParoquiaModel | null>(null);
-
+  console.log('Valor de paroquiaInfo:', paroquiaInfo);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -30,9 +30,10 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
 
   useEffect(() => {
     if (paroquiaSelecionada) {
-      axios
-      .get(`http://localhost:3001/paroquias-nome/${paroquiaSelecionada.NomeParoquia}`)
+      console.log('Nome da paróquia:', paroquiaSelecionada.NomeParoquia);
+      axios.get(`http://localhost:3001/api/paroquias-nome/${paroquiaSelecionada.NomeParoquia}`)
         .then((response) => {
+          console.log('Resposta do servidor:', response.data);
           setParoquiaInfo(response.data);
         })
         .catch((error) => {
@@ -41,8 +42,6 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
     }
   }, [paroquiaSelecionada]);
   
-
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Enviar os dados do formulário para o servidor
@@ -60,11 +59,11 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
     <div className="entre-em-contato">
       <h2>Entre em Contato</h2>
         <div className="form">
-          <form onSubmit={handleSubmit}>
+          <form className="formulario" onSubmit={handleSubmit}>
             <div className="input-group">
-              <label htmlFor="nome">Nome:</label>
-              <input
+              <input className="inputs"
                 type="text"
+                placeholder="Nome:"
                 id="nome"
                 name="nome"
                 value={formData.nome}
@@ -72,20 +71,20 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
               />
             </div>
             <div className="input-group">
-              <label htmlFor="email">E-mail:</label>
-              <input
+              <input className="inputs"
                 type="email"
                 id="email"
                 name="email"
+                placeholder="E-mail:"
                 value={formData.email}
                 onChange={handleChange}
               />
             </div>
             <div className="input-group">
-              <label htmlFor="mensagem">Mensagem:</label>
-              <textarea
+              <textarea className="caixa-de-mensagem"
                 id="mensagem"
                 name="mensagem"
+                placeholder="Mensagem:"
                 value={formData.mensagem}
                 onChange={handleChange}
               />
@@ -95,16 +94,14 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
           </form>
           {paroquiaInfo && (
         <div className="paroquia-Informacoes">
-            <p>{paroquiaInfo.NomeParoquia}</p>
-            <p>Padres: {paroquiaInfo.Padres}</p>
-            <p>CEP: {paroquiaInfo.CEP}</p>
-            <p>Localização: {paroquiaInfo.LocalizacaoParoquia}</p>
-            <p>Bairro: {paroquiaInfo.Bairro}</p>
-            <p>
-              Informações adicionais:{" "}
+          <p>
+              {" "}
               {paroquiaInfo.InformacoesAdicionais}
             </p>
-            <p>Contato email: {paroquiaInfo.EmailResponsavel}</p>
+            <p>{paroquiaInfo.NomeParoquia}</p>
+            <p>Localização: {paroquiaInfo.LocalizacaoParoquia}, {paroquiaInfo.Bairro}, {paroquiaInfo.CEP}</p>
+            <p>Padres: {paroquiaInfo.Padres}</p>
+            <p>Contatos: {paroquiaInfo.EmailResponsavel}</p>
           </div>
         )}
         </div>

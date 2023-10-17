@@ -44,10 +44,11 @@ const EscolhaParoquia: React.FC<EscolhaParoquiaProps> = ({ setParoquiaSelecionad
   // Função para redirecionar para a página principal da paróquia
   const redirectToPaginaPrincipal = () => {
     if (initialOption) {
+      setParoquiaSelecionada(initialOption);
+      console.log('Botão "Buscar" clicado.');
       navigate('/pagina-principal-paroquia'); 
     }
   };
-
   return (
     <div className="page-wrapper">
       <div className="content-wrapper">
@@ -64,7 +65,7 @@ const EscolhaParoquia: React.FC<EscolhaParoquiaProps> = ({ setParoquiaSelecionad
             renderInput={(params) => <TextField {...params} label="Paróquia" variant="outlined" />}
             value={initialOption || null} // Define o valor inicial com base na verificação
           />
-          <button onClick={redirectToPaginaPrincipal}>Buscar</button> {/* Adicione um evento de clique */}
+          <button onClick={redirectToPaginaPrincipal}>Buscar</button> 
           <p>
             Não encontrou sua paróquia?
             <a href="/paroquia-cadastro">Cadastre aqui</a>

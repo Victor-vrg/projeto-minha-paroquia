@@ -29,6 +29,7 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, db_1.initializeDatabase)();
         // Roteadores
         app.use('/api', paroquiaRoute_1.default);
+        app.use('/paroquias-nome', paroquiaRoute_1.default);
         app.use('/destaque', EventosRoute_1.default);
         app.use('/eventos', EventosRoute_1.default);
         app.use('/destaqueEx', ExcursaoRoute_1.default);
