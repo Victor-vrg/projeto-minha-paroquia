@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ParoquiaModel from "../../../backend/src/models/paroquiaModel";
 import '../styles/Entreemcontato.css'
+
 interface EntreEmContatoProps {
   paroquiaSelecionada: ParoquiaModel | null; // Certifique-se de que a paróquia seja passada como prop
 }
+
 
 const EntreEmContato: React.FC<EntreEmContatoProps> = ({
   paroquiaSelecionada,
@@ -56,12 +58,26 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
   };
 
   return (
+    
     <div className="entre-em-contato">
       <h2>Entre em Contato</h2>
+      {window.innerWidth > 1024 && paroquiaInfo && ( 
+      <p> 
+        Localização: {paroquiaInfo.LocalizacaoParoquia}, {paroquiaInfo.Bairro}, {paroquiaInfo.CEP}
+      </p>
+    )}
+      <iframe 
+      className="mapa"
+        title="Mapa da Paróquia"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3750.5461755643496!2d-44.03463425275737!3d-19.943520233759035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa695e5f8be9079%3A0x10da2c4429defb98!2sPar%C3%B3quia%20Santa%20Maria%20Rainha%20dos%20Ap%C3%B3stolos!5e0!3m2!1spt-PT!2sbr!4v1697569230904!5m2!1spt-PT!2sbr"
+      allowFullScreen
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+    ></iframe>
         <div className="form">
           <form className="formulario" onSubmit={handleSubmit}>
             <div className="input-group">
-              <input className="inputs"
+              <input className="input-form"
                 type="text"
                 placeholder="Nome:"
                 id="nome"
@@ -71,7 +87,7 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
               />
             </div>
             <div className="input-group">
-              <input className="inputs"
+              <input className="input-form"
                 type="email"
                 id="email"
                 name="email"
@@ -106,6 +122,7 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
         )}
         </div>
       </div>
+   
   );
 };
 
