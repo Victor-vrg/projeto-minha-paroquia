@@ -19,7 +19,11 @@ import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import "@fontsource/roboto/400.css";
 import '../styles/header.css';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  nomeParoquia: string;
+}
+
+const Header: React.FC<HeaderProps> = ({ nomeParoquia }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [open, setOpen] = useState(false);
 
@@ -68,7 +72,7 @@ const Header: React.FC = () => {
             <MenuIcon />
           </IconButton>
           <Typography className="nome-paroquia" variant="h6">
-            Nome da Paróquia
+            {nomeParoquia}
           </Typography>
           <IconButton
             onClick={handleMenuOpen}

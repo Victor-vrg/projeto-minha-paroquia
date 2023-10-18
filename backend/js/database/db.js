@@ -45,6 +45,13 @@ exports.getDatabaseInstance = getDatabaseInstance;
 const createTables = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (exports.dbInstance === null || exports.dbInstance === void 0 ? void 0 : exports.dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS Feedback (
+        ID             INTEGER       PRIMARY KEY AUTOINCREMENT,
+        NomeUsuario    VARCHAR (255) NOT NULL,
+        Email          VARCHAR (255) NOT NULL,
+        Mensagem       TEXT,
+        DataEnvio      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
     CREATE TABLE IF NOT EXISTS Eventos (
         ID                INTEGER       PRIMARY KEY AUTOINCREMENT,
         NomeEvento        VARCHAR (255) NOT NULL,

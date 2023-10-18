@@ -86,3 +86,11 @@ Esta tabela é uma tabela de junção que permite relacionar eventos a serviços
 - **IDServicoComunitario**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao usuário.
 - **SenhaHash**: A senha do usuário, armazenada como um hash.
 - **Cargo**: O cargo do usuário.
+
+
+## tabela Feedback 
+   **ID**  
+   **NomeUsuario**
+   **Email**
+   **Mensagem**
+    **DataEnvio**

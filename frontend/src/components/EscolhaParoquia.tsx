@@ -46,7 +46,7 @@ const EscolhaParoquia: React.FC<EscolhaParoquiaProps> = ({ setParoquiaSelecionad
     if (initialOption) {
       setParoquiaSelecionada(initialOption);
       console.log('Botão "Buscar" clicado.');
-      navigate('/pagina-principal-paroquia'); 
+      navigate('/pagina-principal-paroquia', { state: { nomeParoquia: initialOption.NomeParoquia } });
     }
   };
   return (

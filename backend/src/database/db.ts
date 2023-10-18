@@ -37,6 +37,13 @@ export const getDatabaseInstance = (): Database<sqlite3.Database, sqlite3.Statem
 const createTables = async () => {
   try {
     await dbInstance?.exec(`
+    CREATE TABLE IF NOT EXISTS Feedback (
+        ID             INTEGER       PRIMARY KEY AUTOINCREMENT,
+        NomeUsuario    VARCHAR (255) NOT NULL,
+        Email          VARCHAR (255) NOT NULL,
+        Mensagem       TEXT,
+        DataEnvio      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
     CREATE TABLE IF NOT EXISTS Eventos (
         ID                INTEGER       PRIMARY KEY AUTOINCREMENT,
         NomeEvento        VARCHAR (255) NOT NULL,
