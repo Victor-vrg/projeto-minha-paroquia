@@ -16,7 +16,7 @@ exports.getDatabaseInstance = exports.initializeDatabase = exports.dbInstance = 
 const sqlite_1 = require("sqlite");
 const sqlite3_1 = __importDefault(require("sqlite3"));
 const path_1 = __importDefault(require("path"));
-const DATABASE_FILE = path_1.default.join(__dirname, '../basedeteste.sqlite3');
+const DATABASE_FILE = path_1.default.join(__dirname, "../basedeteste.sqlite3");
 exports.dbInstance = null;
 const initializeDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -24,20 +24,20 @@ const initializeDatabase = () => __awaiter(void 0, void 0, void 0, function* () 
             filename: DATABASE_FILE,
             driver: sqlite3_1.default.Database,
         });
-        console.log('Conexão com o banco de dados SQLite3 estabelecida!');
+        console.log("Conexão com o banco de dados SQLite3 estabelecida!");
         yield createTables();
         yield insertTestData();
-        console.log('Dados de teste inseridos com sucesso!');
+        console.log("Dados de teste inseridos com sucesso!");
     }
     catch (error) {
-        console.error('Erro ao conectar ao banco de dados:', error);
+        console.error("Erro ao conectar ao banco de dados:", error);
         throw error;
     }
 });
 exports.initializeDatabase = initializeDatabase;
 const getDatabaseInstance = () => {
     if (!exports.dbInstance) {
-        throw new Error('Banco de dados não inicializado.');
+        throw new Error("Banco de dados não inicializado.");
     }
     return exports.dbInstance;
 };
@@ -194,77 +194,22 @@ const createTables = () => __awaiter(void 0, void 0, void 0, function* () {
         REFERENCES ServicosComunitarios (ID) 
     );
     `));
-        yield (exports.dbInstance === null || exports.dbInstance === void 0 ? void 0 : exports.dbInstance.exec(`
-    -- Índice: idx_data_inicio_evento
-    CREATE INDEX IF NOT EXISTS idx_data_inicio_evento ON Eventos (
-        DataInicio
-    );
-    
-    -- Índice: idx_data_inicio_excursao
-    CREATE INDEX IF NOT EXISTS idx_data_inicio_excursao ON Excursoes (
-        DataInicioExcursao
-    );
-    
-    -- Índice: idx_email_usuario
-    CREATE INDEX IF NOT EXISTS idx_email_usuario ON Usuarios (
-        Email
-    );
-    
-    -- Índice: idx_evento_participacao
-    CREATE INDEX IF NOT EXISTS idx_evento_participacao ON ParticipacoesEventos (
-        EventoID
-    );
-    
-    -- Índice: idx_nome_evento
-    CREATE INDEX IF NOT EXISTS idx_nome_evento ON Eventos (
-        NomeEvento
-    );
-    
-    -- Índice: idx_nome_excursao
-    CREATE INDEX IF NOT EXISTS idx_nome_excursao ON Excursoes (
-        NomeExcursao
-    );
-    
-    -- Índice: idx_nome_paroquia
-    CREATE INDEX IF NOT EXISTS idx_nome_paroquia ON Paroquias (
-        NomeParoquia
-    );
-    
-    -- Índice: idx_nome_usuario
-    CREATE INDEX IF NOT EXISTS idx_nome_usuario ON Usuarios (
-        NomeCompleto
-    );
-    
-    -- Índice: idx_servico_comunitario
-    CREATE INDEX IF NOT EXISTS idx_servico_comunitario ON ServicosComunitarios (
-        ServicoComunitario
-    );
-    
-    -- Índice: idx_tipo_servico
-    CREATE INDEX IF NOT EXISTS idx_tipo_servico ON ServicosComunitarios (
-        TipoServicoComunitario
-    );
-    
-    -- Índice: idx_usuario_participacao
-    CREATE INDEX IF NOT EXISTS idx_usuario_participacao ON ParticipacoesEventos (
-        UsuarioID
-    );
-    `));
     }
     catch (error) {
-        console.error('Erro ao criar tabelas:', error);
+        console.error("Erro ao criar tabelas:", error);
         throw error;
     }
 });
 const insertTestData = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Inserir novos dados de teste- ja temos paroquia,eventos,serviços de testes!
+        // Inserir novos dados (ABAIXO) de teste ja temos paroquia,eventos,serviços de testes!
         yield (exports.dbInstance === null || exports.dbInstance === void 0 ? void 0 : exports.dbInstance.exec(`
+    
     `));
-        console.log('Dados de teste inseridos com sucesso!');
+        console.log("Dados de teste inseridos com sucesso!");
     }
     catch (error) {
-        console.error('Erro ao inserir dados de teste:', error);
+        console.error("Erro ao inserir dados de teste:", error);
         throw error;
     }
 });

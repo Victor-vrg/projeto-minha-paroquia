@@ -14,9 +14,9 @@ const db_1 = require("../database/db");
 const addFeedback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const db = (0, db_1.getDatabaseInstance)();
-        const { NomeUsuario, email, mensagem } = req.body;
-        const statement = yield db.prepare('INSERT INTO Feedback (NomeUsuario, email, mensagem) VALUES (?, ?, ?)');
-        yield statement.run(NomeUsuario, email, mensagem);
+        const { NomeUsuario, Email, Mensagem } = req.body;
+        const statement = yield db.prepare('INSERT INTO Feedback (NomeUsuario, Email, Mensagem) VALUES (?, ?, ?)');
+        yield statement.run(NomeUsuario, Email, Mensagem);
         yield statement.finalize();
         res.status(201).json({ message: 'Feedback adicionado com sucesso' });
     }

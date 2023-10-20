@@ -4,6 +4,7 @@ import paroquiasRoutes from './routes/paroquiaRoute';
 import eventosRoute from './routes/EventosRoute';
 import ExcursaoRoute from './routes/ExcursaoRoute';
 import FeedbackRoute from './routes/feedbackRoute';
+import usuarioRoute from './routes/usuarioRoute'
 import { initializeDatabase } from './database/db'; 
 
 const app = express();
@@ -27,6 +28,7 @@ const startServer = async () => {
     app.use('/destaqueEx', ExcursaoRoute);
     app.use('/excursao', ExcursaoRoute);
     app.use('/feedback', FeedbackRoute);
+    app.use('/usuarios', usuarioRoute)
   
 
     app.listen(port, () => {

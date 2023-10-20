@@ -4,3 +4,4 @@
 /backend/src/basedeteste.sqlite3
 /backend/public/img
 /frontend/src/config.js
+/backend/src/config.ts

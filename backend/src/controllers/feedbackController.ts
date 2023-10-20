@@ -7,11 +7,11 @@ import { getDatabaseInstance } from '../database/db';
 export const addFeedback = async (req: Request, res: Response) => {
   try {
     const db = getDatabaseInstance();
-    const { NomeUsuario, email, mensagem } = req.body; 
+    const { NomeUsuario, Email, Mensagem } = req.body; 
     const statement = await db.prepare(
-      'INSERT INTO Feedback (NomeUsuario, email, mensagem) VALUES (?, ?, ?)'
+      'INSERT INTO Feedback (NomeUsuario, Email, Mensagem) VALUES (?, ?, ?)'
     );
-    await statement.run(NomeUsuario, email, mensagem);
+    await statement.run(NomeUsuario, Email, Mensagem);
     await statement.finalize();
     res.status(201).json({ message: 'Feedback adicionado com sucesso' });
   } catch (error) {

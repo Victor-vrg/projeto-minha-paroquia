@@ -1,10 +1,11 @@
-import { open, Database } from 'sqlite';
-import sqlite3 from 'sqlite3';
-import path from 'path';
+import { open, Database } from "sqlite";
+import sqlite3 from "sqlite3";
+import path from "path";
 
-const DATABASE_FILE = path.join(__dirname, '../basedeteste.sqlite3');
+const DATABASE_FILE = path.join(__dirname, "../basedeteste.sqlite3");
 
-export let dbInstance: Database<sqlite3.Database, sqlite3.Statement> | null = null;
+export let dbInstance: Database<sqlite3.Database, sqlite3.Statement> | null =
+  null;
 
 export const initializeDatabase = async (): Promise<void> => {
   try {
@@ -13,23 +14,24 @@ export const initializeDatabase = async (): Promise<void> => {
       driver: sqlite3.Database,
     });
 
-    console.log('Conexão com o banco de dados SQLite3 estabelecida!');
-
+    console.log("Conexão com o banco de dados SQLite3 estabelecida!");
 
     await createTables();
     await insertTestData();
 
-    console.log('Dados de teste inseridos com sucesso!');
-
+    console.log("Dados de teste inseridos com sucesso!");
   } catch (error) {
-    console.error('Erro ao conectar ao banco de dados:', error);
+    console.error("Erro ao conectar ao banco de dados:", error);
     throw error;
   }
 };
 
-export const getDatabaseInstance = (): Database<sqlite3.Database, sqlite3.Statement> => {
+export const getDatabaseInstance = (): Database<
+  sqlite3.Database,
+  sqlite3.Statement
+> => {
   if (!dbInstance) {
-    throw new Error('Banco de dados não inicializado.');
+    throw new Error("Banco de dados não inicializado.");
   }
   return dbInstance;
 };
@@ -186,79 +188,21 @@ const createTables = async () => {
         REFERENCES ServicosComunitarios (ID) 
     );
     `);
-
-    
-    await dbInstance?.exec(`
-    -- Índice: idx_data_inicio_evento
-    CREATE INDEX IF NOT EXISTS idx_data_inicio_evento ON Eventos (
-        DataInicio
-    );
-    
-    -- Índice: idx_data_inicio_excursao
-    CREATE INDEX IF NOT EXISTS idx_data_inicio_excursao ON Excursoes (
-        DataInicioExcursao
-    );
-    
-    -- Índice: idx_email_usuario
-    CREATE INDEX IF NOT EXISTS idx_email_usuario ON Usuarios (
-        Email
-    );
-    
-    -- Índice: idx_evento_participacao
-    CREATE INDEX IF NOT EXISTS idx_evento_participacao ON ParticipacoesEventos (
-        EventoID
-    );
-    
-    -- Índice: idx_nome_evento
-    CREATE INDEX IF NOT EXISTS idx_nome_evento ON Eventos (
-        NomeEvento
-    );
-    
-    -- Índice: idx_nome_excursao
-    CREATE INDEX IF NOT EXISTS idx_nome_excursao ON Excursoes (
-        NomeExcursao
-    );
-    
-    -- Índice: idx_nome_paroquia
-    CREATE INDEX IF NOT EXISTS idx_nome_paroquia ON Paroquias (
-        NomeParoquia
-    );
-    
-    -- Índice: idx_nome_usuario
-    CREATE INDEX IF NOT EXISTS idx_nome_usuario ON Usuarios (
-        NomeCompleto
-    );
-    
-    -- Índice: idx_servico_comunitario
-    CREATE INDEX IF NOT EXISTS idx_servico_comunitario ON ServicosComunitarios (
-        ServicoComunitario
-    );
-    
-    -- Índice: idx_tipo_servico
-    CREATE INDEX IF NOT EXISTS idx_tipo_servico ON ServicosComunitarios (
-        TipoServicoComunitario
-    );
-    
-    -- Índice: idx_usuario_participacao
-    CREATE INDEX IF NOT EXISTS idx_usuario_participacao ON ParticipacoesEventos (
-        UsuarioID
-    );
-    `);
   } catch (error) {
-    console.error('Erro ao criar tabelas:', error);
+    console.error("Erro ao criar tabelas:", error);
     throw error;
   }
 };
 const insertTestData = async () => {
-    try {
-      // Inserir novos dados de teste- ja temos paroquia,eventos,serviços de testes!
-      await dbInstance?.exec(`
+  try {
+    // Inserir novos dados (ABAIXO) de teste ja temos paroquia,eventos,serviços de testes!
+    await dbInstance?.exec(`
+    
     `);
-  
-      console.log('Dados de teste inseridos com sucesso!');
-  
-    } catch (error) {
-      console.error('Erro ao inserir dados de teste:', error);
-      throw error;
-    }
-  };
+
+    console.log("Dados de teste inseridos com sucesso!");
+  } catch (error) {
+    console.error("Erro ao inserir dados de teste:", error);
+    throw error;
+  }
+};

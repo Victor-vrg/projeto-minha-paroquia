@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import ParoquiaModel from "../../../backend/src/models/paroquiaModel";
 import '../styles/Entreemcontato.css'
@@ -6,7 +6,6 @@ import '../styles/Entreemcontato.css'
 interface EntreEmContatoProps {
   paroquiaSelecionada: ParoquiaModel | null; // Certifique-se de que a paróquia seja passada como prop
 }
-
 
 const EntreEmContato: React.FC<EntreEmContatoProps> = ({
   paroquiaSelecionada,
@@ -18,9 +17,9 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
   });
 
   const [enviado, setEnviado] = useState(false);
-
   const [paroquiaInfo, setParoquiaInfo] = useState<ParoquiaModel | null>(null);
-  console.log('Valor de paroquiaInfo:', paroquiaInfo);
+  const prevParoquiaSelecionada = useRef<ParoquiaModel | null>(null);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -31,22 +30,27 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
   };
 
   useEffect(() => {
-    if (paroquiaSelecionada) {
-      
-      axios.get(`http://localhost:3001/api/paroquias-nome/${paroquiaSelecionada.NomeParoquia}`)
+    if (paroquiaSelecionada) 
+      if (paroquiaSelecionada && paroquiaSelecionada !== prevParoquiaSelecionada.current) {
+      axios
+        .get(`http://localhost:3001/api/paroquias-nome/${paroquiaSelecionada.NomeParoquia}`)
         .then((response) => {
-        
           setParoquiaInfo(response.data);
+          console.log('Valor de paroquiaInfo:', response.data);
         })
         .catch((error) => {
           console.error("Erro ao buscar informações da paróquia:", error);
         });
     }
   }, [paroquiaSelecionada]);
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Enviar os dados do formulário para o servidor
+    if (!formData.Email) {
+      console.error("O campo 'Email' é obrigatório.");
+      return;
+    }
+  
     axios
       .post("http://localhost:3001/feedback/add-feedback", formData)
       .then((response) => {
@@ -56,6 +60,7 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
         console.error("Erro ao enviar feedback:", error);
       });
   };
+  
 
   return (
     
@@ -88,10 +93,10 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
             </div>
             <div className="input-group">
               <input className="input-form"
-                type="email"
-                id="email"
+                type="Email"
+                id="Email"
                 name="Email"
-                placeholder="E-mail:"
+                placeholder="Email:"
                 value={formData.Email}
                 onChange={handleChange}
               />
