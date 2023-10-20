@@ -7,9 +7,9 @@ interface UsuarioModel {
     DataNascimento: string | null;
     ParoquiaMaisFrequentada: number | null;
     NivelAcesso: number;
-    IDServicoComunitario: number | null;
+    IDServicoComunitario: number[] | null;
     SenhaHash: string;
-    Cargo: string | null;
+    Cargo: number | null;
   }
   
   export default UsuarioModel;

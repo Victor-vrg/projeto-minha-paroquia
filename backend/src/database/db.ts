@@ -167,26 +167,35 @@ const createTables = async () => {
     );
     
     CREATE TABLE IF NOT EXISTS Usuarios (
-        ID                      INTEGER       PRIMARY KEY AUTOINCREMENT,
-        NomeCompleto            VARCHAR (255) NOT NULL,
-        Email                   VARCHAR (255) NOT NULL,
-        Telefone                VARCHAR (20),
-        Bairro                  VARCHAR (255),
-        DataNascimento          DATE,
-        ParoquiaMaisFrequentada INT,
-        NivelAcesso             INT,
-        IDServicoComunitario    INT,
-        SenhaHash               VARCHAR (255) NOT NULL,
-        Cargo                   VARCHAR (150),-- Senha criptografada
-        FOREIGN KEY (
-            ParoquiaMaisFrequentada
-        )
-        REFERENCES Paroquias (ID),
-        FOREIGN KEY (
-            IDServicoComunitario
-        )
-        REFERENCES ServicosComunitarios (ID) 
-    );
+      ID                      INTEGER       PRIMARY KEY AUTOINCREMENT,
+      NomeCompleto            VARCHAR (255) NOT NULL,
+      Email                   VARCHAR (255) NOT NULL,
+      Telefone                VARCHAR (20),
+      Bairro                  VARCHAR (255),
+      DataNascimento          DATE,
+      ParoquiaMaisFrequentada INT,
+      NivelAcesso             INT,
+      IDServicoComunitario    INT,
+      SenhaHash               VARCHAR (255) NOT NULL,
+      CargoID                 INT DEFAULT 1,  -- Valor padrão "1" para Membro
+      FOREIGN KEY (
+          ParoquiaMaisFrequentada
+      )
+      REFERENCES Paroquias (ID),
+      FOREIGN KEY (
+          IDServicoComunitario
+      )
+      REFERENCES ServicosComunitarios (ID),
+      FOREIGN KEY (
+          CargoID
+      )
+      REFERENCES Cargos (ID) -- Chave estrangeira para a tabela "Cargos"
+  );
+  
+    CREATE TABLE IF NOT EXISTS Cargos (
+      ID                 INTEGER PRIMARY KEY AUTOINCREMENT,
+      NomeCargo          VARCHAR (150) NOT NULL
+  );
     `);
   } catch (error) {
     console.error("Erro ao criar tabelas:", error);

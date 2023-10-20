@@ -7,6 +7,7 @@ import { getDatabaseInstance } from '../database/db';
 
 // Controlador para buscar todos os usuários
 export const getUsers = async (req: Request, res: Response) => {
+  
   try {
     const db = getDatabaseInstance();
     const users = await db.all<UsuarioModel[]>('SELECT * FROM Usuarios');
@@ -19,7 +20,6 @@ export const getUsers = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const { NomeCompleto, Email, senha } = req.body; // Obtenha os dados do corpo da solicitação
-
   try {
     // Verifique se NomeCompleto ou Email foram fornecidos
     if (!NomeCompleto && !Email) {
@@ -52,5 +52,36 @@ export const login = async (req: Request, res: Response) => {
   } catch (error: any) { // Adicione o tipo 'any' ou um tipo mais apropriado
     console.error(error);
     res.status(400).json({ error: error.message });
+  }
+};
+
+export const cadastrarUsuario = async (req: Request, res: Response) => {
+  const { NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, IDServicoComunitario } = req.body;
+
+  try {
+    // Certifique-se de criptografar a senha antes de inserir no banco de dados
+    const senhaHash = await bcrypt.hash(req.body.senha, 10);
+
+    const db = getDatabaseInstance();
+    await db.run(
+      'INSERT INTO Usuarios (NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, SenhaHash, IDServicoComunitario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, senhaHash, IDServicoComunitario]
+    );
+
+    res.json({ message: 'Usuário cadastrado com sucesso.' });
+  } catch (error) {
+    console.error('Erro ao cadastrar usuário:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+};
+
+export const getServicosComunitarios = async (req: Request, res: Response) => {
+  try {
+    const db = getDatabaseInstance();
+    const servicosComunitarios = await db.all('SELECT * FROM ServicosComunitarios');
+    res.json(servicosComunitarios);
+  } catch (error) {
+    console.error('Erro ao buscar serviços comunitários:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };

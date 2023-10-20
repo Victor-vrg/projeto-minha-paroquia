@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.getUsers = void 0;
+exports.getServicosComunitarios = exports.cadastrarUsuario = exports.login = exports.getUsers = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config");
@@ -59,3 +59,30 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.login = login;
+const cadastrarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, IDServicoComunitario } = req.body;
+    try {
+        // Certifique-se de criptografar a senha antes de inserir no banco de dados
+        const senhaHash = yield bcrypt_1.default.hash(req.body.senha, 10);
+        const db = (0, db_1.getDatabaseInstance)();
+        yield db.run('INSERT INTO Usuarios (NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, SenhaHash, IDServicoComunitario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, senhaHash, IDServicoComunitario]);
+        res.json({ message: 'Usuário cadastrado com sucesso.' });
+    }
+    catch (error) {
+        console.error('Erro ao cadastrar usuário:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+exports.cadastrarUsuario = cadastrarUsuario;
+const getServicosComunitarios = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const db = (0, db_1.getDatabaseInstance)();
+        const servicosComunitarios = yield db.all('SELECT * FROM ServicosComunitarios');
+        res.json(servicosComunitarios);
+    }
+    catch (error) {
+        console.error('Erro ao buscar serviços comunitários:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+exports.getServicosComunitarios = getServicosComunitarios;

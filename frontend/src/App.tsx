@@ -5,6 +5,7 @@ import EscolhaParoquia from "./components/EscolhaParoquia";
 import PaginaPrincipalParoquia from "./components/PaginaPrincipalParoquia";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ParoquiaModel from "../../backend/src/models/paroquiaModel";
+import CadastroUsuario from './components/CadastroUsuario';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <div className="App">
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/cadastro" element={<CadastroUsuario />} />
             <Route
               path="/escolha-paroquia"
               element={<EscolhaParoquia setParoquiaSelecionada={setParoquiaSelecionada} />}

@@ -79,13 +79,13 @@ Esta tabela é uma tabela de junção que permite relacionar eventos a serviços
 - **NomeCompleto**: O nome completo do usuário.
 - **Email**: O endereço de e-mail do usuário.
 - **Telefone**: O número de telefone do usuário.
-- **Bairro**: O bairro onde o usuário reside.
-- **DataNascimento**: A data de nascimento do usuário.
+- **Bairro**: O bairro onde o usuário reside para saber se tal paroquia recebe publico externo de seu bairro.
+- **DataNascimento**: A data de nascimento do usuário, para saber media de idade.
 - **ParoquiaMaisFrequentada**: Chave estrangeira que se relaciona com a tabela "Paroquias", representando a paróquia mais frequentada pelo usuário.
-- **NivelAcesso**: O nível de acesso do usuário.
-- **IDServicoComunitario**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao usuário.
+- **NivelAcesso**: O nível de acesso do usuário atributo oculto referente ao que ele pode fazer de editar,ver etc.
+- **IDServicoComunitario**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao usuário, pois um usuario pode fazer parte de um,varios ou nenhum serviço comunitario.
 - **SenhaHash**: A senha do usuário, armazenada como um hash.
-- **Cargo**: O cargo do usuário.
+- **Cargo**: O cargo do usuário em um serviço comunitário específico. exemplo um usuario x pode ser lider do serviço comunitario canto, mas apenas membro do serviço comunitario de leitura.
 
 
 ## tabela Feedback 
@@ -94,3 +94,7 @@ Esta tabela é uma tabela de junção que permite relacionar eventos a serviços
    **Email**
    **Mensagem**
     **DataEnvio**
+
+## Tabela Cargos   - referente a cada um serviço comunitario que um usuario pode ter 
+   **ID**  
+   **Cargo**: membro/coordernador/lider

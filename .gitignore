@@ -1,8 +1,9 @@
+/backend/src/config.ts
+/backend/js/config.js
 /frontend/node_modules
 /backend/node_modules
 /backend/src/minha-paroquia-db.sqlite3
 /backend/src/basedeteste.sqlite3
 /backend/public/img
 /frontend/src/config.js
-/backend/src/config.ts
-/backend/js/config.js
+
