@@ -148,7 +148,7 @@ const createTables = () => __awaiter(void 0, void 0, void 0, function* () {
     
     CREATE TABLE IF NOT EXISTS ServicosComunitarios (
         ID                     INTEGER       PRIMARY KEY AUTOINCREMENT,
-        ServicoComunitario     VARCHAR (150),
+        nomeServicoComunitario    VARCHAR (150),
         DescricaoServico       VARCHAR (255),
         ObjetivosServico       TEXT,
         PublicoAlvoServico     VARCHAR (255),
@@ -213,7 +213,6 @@ const insertTestData = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Inserir novos dados (ABAIXO) de teste ja temos paroquia,eventos,serviços de testes!
         yield (exports.dbInstance === null || exports.dbInstance === void 0 ? void 0 : exports.dbInstance.exec(`
-    
     `));
         console.log("Dados de teste inseridos com sucesso!");
     }

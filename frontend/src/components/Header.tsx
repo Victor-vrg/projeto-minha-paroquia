@@ -23,6 +23,7 @@ interface HeaderProps {
   nomeParoquia: string;
 }
 
+
 const Header: React.FC<HeaderProps> = ({ nomeParoquia }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [open, setOpen] = useState(false);

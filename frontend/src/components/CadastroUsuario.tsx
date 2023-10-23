@@ -1,19 +1,25 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import "../styles/cadastroUsuario.css";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Select, { ActionMeta, MultiValue } from 'react-select';
+import { useNavigate } from 'react-router-dom';
+import '../styles/cadastroUsuario.css';
 
 function CadastroUsuario() {
   const [dados, setDados] = useState({
-    NomeCompleto: "",
-    Email: "",
-    Telefone: "",
-    ServicosComunitario: "",
-    Bairro: "",
-    ParoquiaMaisFrequentada: "",
-    DataNascimento: "",
+    NomeCompleto: '',
+    Email: '',
+    Telefone: '',
+    ServicosComunitario: '',
+    Bairro: '',
+    ParoquiaMaisFrequentada: '', // Nome da paróquia selecionada
+    DataNascimento: '',
+    IDServicoComunitario: [] as number[],
+    senha: '',
   });
 
+  const [servicosComunitariosOptions, setServicosComunitariosOptions] = useState([]);
+  const [selectedServicosComunitarios, setSelectedServicosComunitarios] = useState([] as MultiValue<any>);
+  const [paroquiaOptions, setParoquiaOptions] = useState<Array<{ value: number; label: string }>>([]);
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,22 +27,62 @@ function CadastroUsuario() {
     setDados({ ...dados, [name]: value });
   };
 
+  const handleParoquiaInputChange = (inputValue: string) => {
+    // Atualizar as opções de paróquias com base no texto de entrada
+    if (inputValue.trim() === '') {
+      setParoquiaOptions([]);
+    } else {
+      fetchParoquias(inputValue);
+    }
+  };
+
+  const fetchServicosComunitarios = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/usuarios/servicos-comunitarios');
+      const options = response.data.map((servicoComunitario: any) => ({
+        value: servicoComunitario.ID,
+        label: servicoComunitario.ServicoComunitario,
+      }));
+      setServicosComunitariosOptions(options);
+    } catch (error) {
+      console.error('Erro ao buscar serviços comunitários:', error);
+    }
+  };
+
+  const fetchParoquias = async (searchText: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/api/paroquias?s=${searchText}`);
+      const options = response.data.map((paroquia: any) => ({
+        value: paroquia.ID,
+        label: paroquia.NomeParoquia,
+      }));
+      setParoquiaOptions(options);
+    } catch (error) {
+      console.error('Erro ao buscar sugestões de paróquias:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchServicosComunitarios();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      // Enviar os dados de cadastro para o backend
-      const response = await axios.post(
-        "http://localhost:3001/usuarios/cadastrar",
-        dados
-      );
-      console.log("Cadastro bem-sucedido:", response.data);
-      navigate("/login");
-    } catch (error) {
-      console.error("Erro ao cadastrar usuário:", error);
-      // Lógica para lidar com erros, como exibir uma mensagem de erro para o usuário
+    const today = new Date().toISOString().split("T")[0];
+    if (dados.DataNascimento > today) {
+      alert('A data de nascimento não pode ser no futuro.');
+      return;
     }
-  };
+
+    try {
+      const response = await axios.post('http://localhost:3001/usuarios/cadastrar', dados);
+      console.log('Cadastro bem-sucedido:', response.data);
+      navigate('/login');
+    } catch (error) {
+      console.error('Erro ao cadastrar usuário:', error);
+    }
+  }
 
   return (
     <div className="cadastro-user">
@@ -74,18 +120,19 @@ function CadastroUsuario() {
               onChange={handleChange}
               required
             />
-            <label htmlFor="ServicosComunitario">Serviço Comunitário:</label>
-          <input
-            type="text"
-            id="ServicosComunitario"
-            name="ServicosComunitario"
-            value={dados.ServicosComunitario}
-            onChange={handleChange}
-            placeholder="Atividades que desempenha na comunidade, Exemplos: Catequista, Cantor..."
-            multiple
-            required
-          />
-  
+
+            <label htmlFor="ParoquiaMaisFrequentada">Paróquia mais Frequentada:</label>
+            <Select className='select-input'
+              options={paroquiaOptions}
+              onInputChange={handleParoquiaInputChange}
+              value={paroquiaOptions.find(option => option.label === dados.ParoquiaMaisFrequentada)}
+              onChange={(selectedOption) => {
+                setDados({ ...dados, ParoquiaMaisFrequentada: selectedOption ? selectedOption.label : '' });
+              }}
+              isSearchable
+              placeholder="Digite o nome da paróquia"
+            />
+
             <label htmlFor="Bairro">Bairro:</label>
             <input
               type="text"
@@ -96,16 +143,20 @@ function CadastroUsuario() {
               required
             />
 
-            <label htmlFor="ParoquiaMaisFrequentada">
-              Paróquia mais Frequentada:
-            </label>
-            <input
-              type="text"
-              id="ParoquiaMaisFrequentada"
-              name="ParoquiaMaisFrequentada"
-              value={dados.ParoquiaMaisFrequentada}
-              onChange={handleChange} 
-              required
+            <label htmlFor="ServicosComunitario">Serviços Comunitários:</label>
+            <Select
+            className='select-input'
+              options={servicosComunitariosOptions}
+              value={selectedServicosComunitarios}
+              onChange={(newValue: MultiValue<any>, actionMeta: ActionMeta<any>) => {
+                if (actionMeta.action === 'select-option') {
+                  setSelectedServicosComunitarios(newValue);
+                } else if (actionMeta.action === 'remove-value') {
+                  setSelectedServicosComunitarios(newValue);
+                }
+              }}
+              isMulti
+              placeholder="Selecione ou digite para buscar serviços comunitários"
             />
 
             <label htmlFor="DataNascimento">Data de Nascimento:</label>
@@ -114,6 +165,17 @@ function CadastroUsuario() {
               id="DataNascimento"
               name="DataNascimento"
               value={dados.DataNascimento}
+              onChange={handleChange}
+              required
+              max={new Date().toISOString().split("T")[0]}
+            />
+
+            <label htmlFor="senha">Senha:</label>
+            <input
+              type="password"
+              id="senha"
+              name="senha"
+              value={dados.senha}
               onChange={handleChange}
               required
             />

@@ -21,7 +21,7 @@ const PaginaPrincipalParoquia: React.FC<PaginaPrincipalParoquiaProps> = ({ paroq
   const [excursao, setExcursao] = useState<ExcursaoModel[]>([]);
   const location = useLocation();
 
-  const nomeParoquia = location.state?.nomeParoquia || ''; // Acessa o nome da paróquia da localização
+  const nomeParoquia = location.state?.nomeParoquia || localStorage.getItem('paroquiaSelecionada') || '';
   
 
   useEffect(() => {

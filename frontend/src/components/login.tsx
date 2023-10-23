@@ -65,7 +65,7 @@ function Login() {
               onChange={(e) => setsenha(e.target.value)}
               required
             />
-            <button type="submit" onClick={handleLogin}>
+            <button className='.login-button' type="submit" onClick={handleLogin}>
               Entrar
             </button>
             <p className="signup-link">
@@ -75,7 +75,7 @@ function Login() {
               Esqueceu a senha? <a href="/recuperar-senha">Recuperar a senha</a>
             </p>
             <p className="continue-link">
-              <a href="/escolha-paroquia">Continuar sem login</a>
+              <a href="/pagina-principal-paroquia">Continuar sem login</a>
             </p>
           </form>
         </div>

@@ -18,14 +18,17 @@
   font-size: 24px;
   line-height: 1.2;
   color: #333;
+  
 }
 
 .botão-de-navegação {
   margin-left: 16px; 
+  width: auto;
 }
 
 .botão-de-perfil {
   margin-right: 16px; 
+  width: auto;
 }
 
 /* Estilização para o Drawer (navegação lateral) */
@@ -53,6 +56,7 @@
   display: flex;
   align-items: center;
   padding: 12px; /* Espaçamento entre os itens do Drawer */
+  width: auto;
 }
 
 .MuiListItem-button + .MuiListItem-button {
