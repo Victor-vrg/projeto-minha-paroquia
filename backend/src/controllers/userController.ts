@@ -19,7 +19,7 @@ export const getUsers = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { NomeCompleto, Email, senha } = req.body; // Obtenha os dados do corpo da solicitação
+  const { NomeCompleto, Email, senha } = req.body; 
   try {
     // Verifique se NomeCompleto ou Email foram fornecidos
     if (!NomeCompleto && !Email) {
@@ -46,10 +46,13 @@ export const login = async (req: Request, res: Response) => {
 
     // Gere um token JWT para autenticar o usuário
     const token = jwt.sign({ userId: user.ID }, secretKey, { expiresIn: '1h' });
-
+    await db.run(
+      'INSERT INTO Tokens (UserID, Token, Expiracao) VALUES (?, ?, ?)',
+      [user.ID, token, new Date(new Date().getTime() + 3600000)] 
+    );
     // Envie o token como resposta
     res.json({ token });
-  } catch (error: any) { // Adicione o tipo 'any' ou um tipo mais apropriado
+  } catch (error: any) { 
     console.error(error);
     res.status(400).json({ error: error.message });
   }
@@ -59,7 +62,7 @@ export const cadastrarUsuario = async (req: Request, res: Response) => {
   const { NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, IDServicoComunitario } = req.body;
 
   try {
-    // Certifique-se de criptografar a senha antes de inserir no banco de dados
+   
     const senhaHash = await bcrypt.hash(req.body.senha, 10);
 
     const db = getDatabaseInstance();
@@ -85,3 +88,5 @@ export const getServicosComunitarios = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
+
+

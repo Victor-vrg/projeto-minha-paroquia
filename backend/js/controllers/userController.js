@@ -31,7 +31,7 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getUsers = getUsers;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { NomeCompleto, Email, senha } = req.body; // Obtenha os dados do corpo da solicitação
+    const { NomeCompleto, Email, senha } = req.body;
     try {
         // Verifique se NomeCompleto ou Email foram fornecidos
         if (!NomeCompleto && !Email) {
@@ -50,10 +50,11 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Gere um token JWT para autenticar o usuário
         const token = jsonwebtoken_1.default.sign({ userId: user.ID }, config_1.secretKey, { expiresIn: '1h' });
+        yield db.run('INSERT INTO Tokens (UserID, Token, Expiracao) VALUES (?, ?, ?)', [user.ID, token, new Date(new Date().getTime() + 3600000)]);
         // Envie o token como resposta
         res.json({ token });
     }
-    catch (error) { // Adicione o tipo 'any' ou um tipo mais apropriado
+    catch (error) {
         console.error(error);
         res.status(400).json({ error: error.message });
     }
@@ -62,7 +63,6 @@ exports.login = login;
 const cadastrarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, IDServicoComunitario } = req.body;
     try {
-        // Certifique-se de criptografar a senha antes de inserir no banco de dados
         const senhaHash = yield bcrypt_1.default.hash(req.body.senha, 10);
         const db = (0, db_1.getDatabaseInstance)();
         yield db.run('INSERT INTO Usuarios (NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, SenhaHash, IDServicoComunitario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, senhaHash, IDServicoComunitario]);

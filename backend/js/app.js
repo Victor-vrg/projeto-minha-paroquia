@@ -19,6 +19,7 @@ const EventosRoute_1 = __importDefault(require("./routes/EventosRoute"));
 const ExcursaoRoute_1 = __importDefault(require("./routes/ExcursaoRoute"));
 const feedbackRoute_1 = __importDefault(require("./routes/feedbackRoute"));
 const usuarioRoute_1 = __importDefault(require("./routes/usuarioRoute"));
+const tokenRoute_1 = __importDefault(require("./routes/tokenRoute"));
 const db_1 = require("./database/db");
 const app = (0, express_1.default)();
 const port = 3001;
@@ -38,6 +39,7 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
         app.use('/excursao', ExcursaoRoute_1.default);
         app.use('/feedback', feedbackRoute_1.default);
         app.use('/usuarios', usuarioRoute_1.default);
+        app.use('/tokens', tokenRoute_1.default);
         app.listen(port, () => {
             console.log(`Servidor rodando na porta ${port}`);
         });

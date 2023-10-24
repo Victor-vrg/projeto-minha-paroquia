@@ -5,7 +5,9 @@ import eventosRoute from './routes/EventosRoute';
 import ExcursaoRoute from './routes/ExcursaoRoute';
 import FeedbackRoute from './routes/feedbackRoute';
 import usuarioRoute from './routes/usuarioRoute'
+import tokenRoute from './routes/tokenRoute'; 
 import { initializeDatabase } from './database/db'; 
+import { verifyToken } from './verificadorToken';
 
 const app = express();
 const port = 3001;
@@ -28,7 +30,8 @@ const startServer = async () => {
     app.use('/destaqueEx', ExcursaoRoute);
     app.use('/excursao', ExcursaoRoute);
     app.use('/feedback', FeedbackRoute);
-    app.use('/usuarios', usuarioRoute)
+    app.use('/usuarios',  usuarioRoute)
+    app.use('/tokens', tokenRoute);
   
 
     app.listen(port, () => {

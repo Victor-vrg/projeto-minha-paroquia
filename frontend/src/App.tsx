@@ -6,6 +6,7 @@ import PaginaPrincipalParoquia from "./components/PaginaPrincipalParoquia";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ParoquiaModel from "../../backend/src/models/paroquiaModel";
 import CadastroUsuario from './components/CadastroUsuario';
+import RecuperacaoSenha from "./components/RecuperacaoSenha";
 
 function App() {
   const [paroquiaSelecionada, setParoquiaSelecionada] =
@@ -26,6 +27,7 @@ function App() {
             element={<PaginaPrincipalParoquia paroquiaSelecionada={paroquiaSelecionada} />}
           />
           <Route path="/continuar-sem-login" element={<Navigate to="/pagina-principal-paroquia" />} />
+          <Route path="/recuperar-senha" element={<RecuperacaoSenha />} />
           <Route path="/" element={<Navigate to="/escolha-paroquia" />} />
         </Routes>
       </div>
@@ -34,4 +36,3 @@ function App() {
 }
 
 export default App;
-

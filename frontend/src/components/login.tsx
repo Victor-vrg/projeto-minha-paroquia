@@ -3,41 +3,38 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/login.css';
 
+
 function Login() {
   const [NomeCompleto, setNomeCompleto] = useState('');
   const [senha, setsenha] = useState('');
-  const [token, setToken] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // Previne o comportamento padrão do botão de submit
-  
+    e.preventDefault(); 
+
     try {
       console.log('Tentativa de login:', NomeCompleto, senha);
-  
-      // Enviar os dados de autenticação (NomeCompleto, Email, senha) para o backend
       const response = await axios.post('http://localhost:3001/usuarios/login', {
         NomeCompleto,
-        Email: NomeCompleto, // Você pode usar o mesmo valor para Email
+        Email: NomeCompleto, 
         senha,
       });
-  
+
       // Se a autenticação for bem-sucedida, o token será retornado
       const authToken = response.data.token;
-  
-      // Armazenar o token no estado (ou em localStorage, dependendo das necessidades)
-      setToken(authToken);
-  
-      console.log('Login bem-sucedido:', NomeCompleto);
-  
-      // Redirecionar o usuário para a página apropriada após o login
-      navigate('/pagina-principal-paroquia'); // Redireciona para a página de dashboard após o login
+
+      if (authToken) {
+        localStorage.setItem('token', authToken);
+        console.log('Login bem-sucedido:', NomeCompleto);
+        navigate('/pagina-principal-paroquia'); 
+      } else {
+        console.error('Token não foi recebido na resposta.');
+      }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
       // Lógica para lidar com erros, como exibir uma mensagem de erro para o usuário
     }
   };
-  
 
   return (
     <div className="login">
@@ -65,7 +62,7 @@ function Login() {
               onChange={(e) => setsenha(e.target.value)}
               required
             />
-            <button className='.login-button' type="submit" onClick={handleLogin}>
+            <button className='login-button' type="submit" onClick={handleLogin}>
               Entrar
             </button>
             <p className="signup-link">
