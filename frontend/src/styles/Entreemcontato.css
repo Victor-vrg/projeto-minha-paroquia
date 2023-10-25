@@ -70,6 +70,10 @@ input {
     flex-direction: column;
     margin: 0 10px;
     align-items: center;
+    width: 700px;
+  }
+  .button-form {
+    margin: 10px;
     width: 50%;
   }
   .input-group {

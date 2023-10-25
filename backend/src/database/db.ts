@@ -141,7 +141,7 @@ const createTables = async () => {
     );
     
     CREATE TABLE IF NOT EXISTS ServicosComunitarios (
-        ID                     INTEGER       PRIMARY KEY AUTOINCREMENT,
+      ID                     INTEGER       PRIMARY KEY AUTOINCREMENT,
         nomeServicoComunitario    VARCHAR (150),
         DescricaoServico       VARCHAR (255),
         ObjetivosServico       TEXT,
@@ -154,6 +154,22 @@ const createTables = async () => {
         )
         REFERENCES Paroquias (ID) 
     );
+    CREATE TABLE IF NOT EXISTS Excursao_ServicoComunitario (
+      ExcursaoID              INT,
+      ServicoComunitarioID    INT,
+      PRIMARY KEY (
+          ExcursaoID,
+          ServicoComunitarioID
+      ),
+      FOREIGN KEY (
+          ExcursaoID
+      )
+      REFERENCES Excursoes (ID),
+      FOREIGN KEY (
+          ServicoComunitarioID
+      )
+      REFERENCES ServicosComunitarios (ID) 
+  );
     
     CREATE TABLE IF NOT EXISTS Tokens (
         ID        INTEGER       PRIMARY KEY AUTOINCREMENT,
@@ -177,7 +193,6 @@ const createTables = async () => {
       NivelAcesso             INT,
       IDServicoComunitario    INT,
       SenhaHash               VARCHAR (255) NOT NULL,
-      CargoID                 INT DEFAULT 1,  -- Valor padrão "1" para Membro
       FOREIGN KEY (
           ParoquiaMaisFrequentada
       )
@@ -185,17 +200,27 @@ const createTables = async () => {
       FOREIGN KEY (
           IDServicoComunitario
       )
-      REFERENCES ServicosComunitarios (ID),
-      FOREIGN KEY (
-          CargoID
-      )
-      REFERENCES Cargos (ID) -- Chave estrangeira para a tabela "Cargos"
+      REFERENCES ServicosComunitarios (ID)
   );
   
-    CREATE TABLE IF NOT EXISTS Cargos (
-      ID                 INTEGER PRIMARY KEY AUTOINCREMENT,
-      NomeCargo          VARCHAR (150) NOT NULL
-  );
+  CREATE TABLE IF NOT EXISTS LogAtividades (
+    ID                INTEGER       PRIMARY KEY AUTOINCREMENT,
+    UsuarioID         INT,
+    DataHora          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    TipoAcao          VARCHAR (255),
+    RecursoAfetado    VARCHAR (255),
+    DetalhesAcao      TEXT,
+    FOREIGN KEY (UsuarioID) REFERENCES Usuarios (ID)
+);
+
+CREATE TABLE IF NOT EXISTS Usuarios_ServicosComunitarios (
+  ID                     INTEGER       PRIMARY KEY AUTOINCREMENT,
+  UsuarioID              INT,
+  ServicoComunitarioID   INT,
+  NivelAcessoNoServico   INT,
+  FOREIGN KEY (UsuarioID) REFERENCES Usuarios (ID),
+  FOREIGN KEY (ServicoComunitarioID) REFERENCES ServicosComunitarios (ID)
+);
     `);
   } catch (error) {
     console.error("Erro ao criar tabelas:", error);

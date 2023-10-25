@@ -100,7 +100,7 @@ const FeedbackBanner = () => {
                   onChange={handleChange}
                 />
               </div>
-            <button className="button-form" type="submit">
+            <button className="button-form1" type="submit">
               Enviar
             </button>
             {enviado && <p>Feedback enviado com sucesso!</p>}

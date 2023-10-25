@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState, useEffect } from "react";
+import React, { MouseEvent, useState, useEffect} from "react";
 import {
   AppBar,
   Toolbar,
@@ -16,13 +16,13 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import EventIcon from "@mui/icons-material/Event";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
+import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import "@fontsource/roboto/400.css";
 import '../styles/header.css';
 
 interface HeaderProps {
   nomeParoquia: string;
 }
-
 
 const Header: React.FC<HeaderProps> = ({ nomeParoquia }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -46,6 +46,13 @@ const Header: React.FC<HeaderProps> = ({ nomeParoquia }) => {
 
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
@@ -96,17 +103,23 @@ const Header: React.FC<HeaderProps> = ({ nomeParoquia }) => {
       </AppBar>
       <Drawer anchor="left" open={open} onClose={toggleDrawer}>
         <List>
-          <ListItem button onClick={toggleDrawer}>
+          <ListItem button onClick={() => scrollToSection("eventos")}>
             <ListItemIcon>
               <EventIcon />
             </ListItemIcon>
             <ListItemText primary="Eventos" />
           </ListItem>
-          <ListItem button onClick={toggleDrawer}>
+          <ListItem button onClick={() => scrollToSection("excursao")}>
             <ListItemIcon>
               <FlightTakeoffIcon />
             </ListItemIcon>
             <ListItemText primary="Excursões" />
+          </ListItem>
+          <ListItem button onClick={() => scrollToSection("entre-em-contato")}>
+            <ListItemIcon>
+              <ContactSupportIcon />
+            </ListItemIcon>
+            <ListItemText primary="Entre em Contato" />
           </ListItem>
         </List>
       </Drawer>

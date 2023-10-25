@@ -37,7 +37,6 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!NomeCompleto && !Email) {
             throw new Error('Nome Completo ou Email são necessários.');
         }
-        // Consulte o usuário com base no NomeCompleto ou Email
         const db = (0, db_1.getDatabaseInstance)();
         const user = yield db.get('SELECT * FROM Usuarios WHERE NomeCompleto = ? OR Email = ?', [NomeCompleto, Email]);
         if (!user) {

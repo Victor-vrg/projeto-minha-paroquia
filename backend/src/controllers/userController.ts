@@ -25,8 +25,6 @@ export const login = async (req: Request, res: Response) => {
     if (!NomeCompleto && !Email) {
       throw new Error('Nome Completo ou Email são necessários.');
     }
-
-    // Consulte o usuário com base no NomeCompleto ou Email
     const db = getDatabaseInstance();
     const user = await db.get<UsuarioModel>(
       'SELECT * FROM Usuarios WHERE NomeCompleto = ? OR Email = ?',

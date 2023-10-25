@@ -1,4 +1,9 @@
-# Estrutura do Banco de Dados
+## Tabela Feedback
+- **ID**: Chave primária que identifica exclusivamente cada feedback.
+- **NomeUsuario**: O nome do usuário que enviou o feedback.
+- **Email**: O endereço de e-mail do usuário.
+- **Mensagem**: O conteúdo do feedback.
+- **DataEnvio**: A data e hora em que o feedback foi enviado.
 
 ## Tabela Eventos
 - **ID**: Chave primária que identifica exclusivamente cada evento.
@@ -17,9 +22,7 @@
 
 ## Tabela Eventos_ServicosComunitarios
 - **EventoID**: Chave estrangeira que se relaciona com a tabela "Eventos", representando o evento ao qual o serviço comunitário está vinculado.
-- **ServicoComunitarioID**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao evento.
-
-Esta tabela é uma tabela de junção que permite relacionar eventos a serviços comunitários em uma relação muitos-para-muitos.
+- **ServicoComunitarioID**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao evento. Esta tabela é uma tabela de junção que permite relacionar eventos a serviços comunitários em uma relação muitos-para-muitos.
 
 ## Tabela Excursoes
 - **ID**: Chave primária que identifica exclusivamente cada excursão.
@@ -60,7 +63,7 @@ Esta tabela é uma tabela de junção que permite relacionar eventos a serviços
 
 ## Tabela ServicosComunitarios
 - **ID**: Chave primária que identifica exclusivamente cada serviço comunitário.
-- **ServicoComunitario**: O nome ou tipo de serviço comunitário.
+- **nomeServicoComunitario**: O nome ou tipo de serviço comunitário.
 - **DescricaoServico**: Uma descrição textual do serviço comunitário.
 - **ObjetivosServico**: Os objetivos do serviço comunitário.
 - **PublicoAlvoServico**: O público-alvo do serviço comunitário.
@@ -79,22 +82,26 @@ Esta tabela é uma tabela de junção que permite relacionar eventos a serviços
 - **NomeCompleto**: O nome completo do usuário.
 - **Email**: O endereço de e-mail do usuário.
 - **Telefone**: O número de telefone do usuário.
-- **Bairro**: O bairro onde o usuário reside para saber se tal paroquia recebe publico externo de seu bairro.
-- **DataNascimento**: A data de nascimento do usuário, para saber media de idade.
+- **Bairro**: O bairro onde o usuário reside para saber se tal paróquia recebe público externo de seu bairro.
+- **DataNascimento**: A data de nascimento do usuário, para saber média de idade.
 - **ParoquiaMaisFrequentada**: Chave estrangeira que se relaciona com a tabela "Paroquias", representando a paróquia mais frequentada pelo usuário.
-- **NivelAcesso**: O nível de acesso do usuário atributo oculto referente ao que ele pode fazer de editar,ver etc.
-- **IDServicoComunitario**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao usuário, pois um usuario pode fazer parte de um,varios ou nenhum serviço comunitario.
+- **NivelAcesso**: O nível de acesso do usuário, atributo oculto referente ao que ele pode fazer, editar, ver, etc.
+- **IDServicoComunitario**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao usuário, pois um usuário pode fazer parte de um, vários ou nenhum serviço comunitário.
 - **SenhaHash**: A senha do usuário, armazenada como um hash.
-- **Cargo**: O cargo do usuário em um serviço comunitário específico. exemplo um usuario x pode ser lider do serviço comunitario canto, mas apenas membro do serviço comunitario de leitura.
+- **Cargo**: O cargo do usuário em um serviço comunitário específico. Por exemplo, um usuário X pode ser líder do serviço comunitário "Canto", mas apenas membro do serviço comunitário "Leitura".
+
+## Tabela LogAtividades
+- **ID**: Chave primária que identifica exclusivamente cada log de atividade.
+- **UsuarioID**: Chave estrangeira que se relaciona com a tabela "Usuarios", representando o usuário associado ao log de atividade.
+- **DataHora**: A data e hora em que a ação foi registrada.
+- **TipoAcao**: O tipo de ação realizada.
+- **RecursoAfetado**: O recurso afetado pela ação.
+- **DetalhesAcao**: Detalhes adicionais sobre a ação.
+
+## Tabela Usuarios_ServicosComunitarios
+- **ID**: Chave primária que identifica exclusivamente cada associação entre usuários e serviços comunitários.
+- **UsuarioID**: Chave estrangeira que se relaciona com a tabela "Usuarios", representando o usuário associado ao serviço comunitário.
+- **ServicoComunitarioID**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao usuário.
+- **NivelAcessoNoServico**: O nível de acesso do usuário para um serviço comunitário específico.
 
 
-## tabela Feedback 
-   **ID**  
-   **NomeUsuario**
-   **Email**
-   **Mensagem**
-    **DataEnvio**
-
-## Tabela Cargos   - referente a cada um serviço comunitario que um usuario pode ter 
-   **ID**  
-   **Cargo**: membro/coordernador/lider
