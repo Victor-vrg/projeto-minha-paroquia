@@ -19,14 +19,18 @@ import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import "@fontsource/roboto/400.css";
 import '../styles/header.css';
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   nomeParoquia: string;
+  isFielDesconhecido: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ nomeParoquia }) => {
+const Header: React.FC<HeaderProps> = ({ nomeParoquia, isFielDesconhecido }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [open, setOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -41,7 +45,15 @@ const Header: React.FC<HeaderProps> = ({ nomeParoquia }) => {
   };
 
   const handleEditProfile = () => {
-    // Implemente o redirecionamento para a página de edição de perfil (futuro)
+    if (!localStorage.getItem('token')) {
+      navigate('/login');
+    } else {
+      navigate('/painel-adm');
+    }
+  };
+
+  const handleRegister = () => {
+    navigate('/cadastro');
   };
 
   const toggleDrawer = () => {
@@ -96,7 +108,11 @@ const Header: React.FC<HeaderProps> = ({ nomeParoquia }) => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleEditProfile}>Editar Perfil</MenuItem>
+            {isFielDesconhecido ? (
+              <MenuItem onClick={handleRegister}>Fazer Cadastro</MenuItem>
+            ) : (
+              <MenuItem onClick={handleEditProfile}>Editar Perfil</MenuItem>
+            )}
             <MenuItem onClick={handleLogout}>Sair</MenuItem>
           </Menu>
         </Toolbar>

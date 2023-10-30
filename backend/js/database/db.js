@@ -146,6 +146,17 @@ const createTables = () => __awaiter(void 0, void 0, void 0, function* () {
         REFERENCES Eventos (ID) 
     );
     
+    CREATE TABLE IF NOT EXISTS SolicitacoesServicosComunitarios (
+      ID INTEGER PRIMARY KEY AUTOINCREMENT,
+      NomeServicoComunitario VARCHAR(255) NOT NULL,
+      DescricaoServico VARCHAR(255),
+      ObjetivosServico TEXT,
+      PublicoAlvoServico VARCHAR(255),
+      StatusSolicitacao VARCHAR(50) DEFAULT 'Pendente', -- Pode ser 'Pendente', 'Aprovada' ou 'Rejeitada'
+      JustificativaAprovacao TEXT,
+      SolicitanteID INT, -- ID do usuário que fez a solicitação
+      DataSolicitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
     CREATE TABLE IF NOT EXISTS ServicosComunitarios (
       ID                     INTEGER       PRIMARY KEY AUTOINCREMENT,
         nomeServicoComunitario    VARCHAR (150),
@@ -196,7 +207,6 @@ const createTables = () => __awaiter(void 0, void 0, void 0, function* () {
       Bairro                  VARCHAR (255),
       DataNascimento          DATE,
       ParoquiaMaisFrequentada INT,
-      NivelAcesso             INT,
       IDServicoComunitario    INT,
       SenhaHash               VARCHAR (255) NOT NULL,
       FOREIGN KEY (
@@ -227,6 +237,7 @@ CREATE TABLE IF NOT EXISTS Usuarios_ServicosComunitarios (
   FOREIGN KEY (UsuarioID) REFERENCES Usuarios (ID),
   FOREIGN KEY (ServicoComunitarioID) REFERENCES ServicosComunitarios (ID)
 );
+
     `));
     }
     catch (error) {

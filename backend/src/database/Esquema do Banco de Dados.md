@@ -85,10 +85,9 @@
 - **Bairro**: O bairro onde o usuário reside para saber se tal paróquia recebe público externo de seu bairro.
 - **DataNascimento**: A data de nascimento do usuário, para saber média de idade.
 - **ParoquiaMaisFrequentada**: Chave estrangeira que se relaciona com a tabela "Paroquias", representando a paróquia mais frequentada pelo usuário.
-- **NivelAcesso**: O nível de acesso do usuário, atributo oculto referente ao que ele pode fazer, editar, ver, etc.
 - **IDServicoComunitario**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao usuário, pois um usuário pode fazer parte de um, vários ou nenhum serviço comunitário.
 - **SenhaHash**: A senha do usuário, armazenada como um hash.
-- **Cargo**: O cargo do usuário em um serviço comunitário específico. Por exemplo, um usuário X pode ser líder do serviço comunitário "Canto", mas apenas membro do serviço comunitário "Leitura".
+
 
 ## Tabela LogAtividades
 - **ID**: Chave primária que identifica exclusivamente cada log de atividade.

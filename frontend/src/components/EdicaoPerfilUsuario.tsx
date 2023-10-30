@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select, { ActionMeta, MultiValue } from 'react-select';
-import { useNavigate } from 'react-router-dom';
 import '../styles/cadastroUsuario.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-function CadastroUsuario() {
+function EditarPerfilUsuario() {
   const [dados, setDados] = useState({
     NomeCompleto: '',
     Email: '',
     Telefone: '',
     ServicosComunitario: '',
     Bairro: '',
-    ParoquiaMaisFrequentada: '', 
+    ParoquiaMaisFrequentada: '',
     DataNascimento: '',
     IDServicoComunitario: [] as number[],
-    senha: '',
   });
 
-  const [servicosComunitariosOptions, setServicosComunitariosOptions] = useState([]);
-  const [selectedServicosComunitarios, setSelectedServicosComunitarios] = useState([] as MultiValue<any>);
-  const [paroquiaOptions, setParoquiaOptions] = useState<Array<{ value: number; label: string }>>([]);
-  const navigate = useNavigate();
+  const [novaSenha, setNovaSenha] = useState('');
+  const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [senhaError, setSenhaError] = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false); 
+
+  const [servicosComunitariosOptions, setServicosComunitariosOptions] = useState<any[]>([]); 
+  const [selectedServicosComunitarios, setSelectedServicosComunitarios] = useState<MultiValue<any>>([]);
+  const [paroquiaOptions, setParoquiaOptions] = useState<{ value: number; label: string }[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -75,21 +79,35 @@ function CadastroUsuario() {
       return;
     }
 
-    try {
-      const response = await axios.post('http://localhost:3001/usuarios/cadastrar', dados);
-      console.log('Cadastro bem-sucedido:', response.data);
-      navigate('/login');
-    } catch (error) {
-      console.error('Erro ao cadastrar usuário:', error);
+    if (novaSenha !== confirmarSenha) {
+      setSenhaError('As senhas não coincidem');
+      return;
     }
-  }
+
+    try {
+        const data = {
+            NomeCompleto: dados.NomeCompleto,
+            Email: dados.Email,
+            Telefone: dados.Telefone,
+            Bairro: dados.Bairro,
+            ParoquiaMaisFrequentada: dados.ParoquiaMaisFrequentada,
+            DataNascimento: dados.DataNascimento,
+            IDServicoComunitario: selectedServicosComunitarios.map(option => option.value), 
+            NovaSenha: novaSenha, 
+          };
+          const response = await axios.put('http://localhost:3001/usuarios/editar-perfil', data);
+          console.log('Resposta do servidor:', response.data);
+        } catch (error) {
+          console.error('Erro ao editar perfil:', error);
+        }
+      };
 
   return (
-    <div className="cadastro-user">
+    <div className="editar-perfil-user">
       <div className="cadastro-container">
         <div className="cadastro-central">
           <form className="cadastro-form" onSubmit={handleSubmit}>
-            <h2>Cadastro de Usuário</h2>
+            <h2>Editar Perfil de Usuário</h2>
 
             <label htmlFor="NomeCompleto">Nome Completo:</label>
             <input
@@ -122,7 +140,8 @@ function CadastroUsuario() {
             />
 
             <label htmlFor="ParoquiaMaisFrequentada">Paróquia mais Frequentada:</label>
-            <Select className='select-input'
+            <Select
+              className='select-input'
               options={paroquiaOptions}
               onInputChange={handleParoquiaInputChange}
               value={paroquiaOptions.find(option => option.label === dados.ParoquiaMaisFrequentada)}
@@ -170,17 +189,44 @@ function CadastroUsuario() {
               max={new Date().toISOString().split("T")[0]}
             />
 
-            <label htmlFor="senha">Senha:</label>
-            <input
-              type="password"
-              id="senha"
-              name="senha"
-              value={dados.senha}
-              onChange={handleChange}
-              required
-            />
+            <label htmlFor="nova-senha">Nova Senha:</label>
+            <div className="password-input">
+              <input
+                type={mostrarSenha ? 'text' : 'password'}
+                id="nova-senha"
+                name="nova-senha"
+                placeholder="Digite sua nova senha"
+                value={novaSenha}
+                onChange={(e) => setNovaSenha(e.target.value)}
+                required
+              />
+              <FontAwesomeIcon
+                icon={mostrarSenha ? faEye : faEyeSlash}
+                onClick={() => setMostrarSenha(!mostrarSenha)}
+                className="eye-icon right-icon"
+              />
+            </div>
 
-            <button type="submit">Cadastrar</button>
+            <label htmlFor="confirmar-senha">Confirmar Senha:</label>
+            <div className="password-input">
+              <input
+                type={mostrarSenha ? 'text' : 'password'}
+                id="confirmar-senha"
+                name="confirmar-senha"
+                placeholder="Confirme a nova senha"
+                value={confirmarSenha}
+                onChange={(e) => setConfirmarSenha(e.target.value)}
+                required
+              />
+              <FontAwesomeIcon
+                icon={mostrarSenha ? faEye : faEyeSlash}
+                onClick={() => setMostrarSenha(!mostrarSenha)}
+                className="eye-icon right-icon"
+              />
+              <span className="error-message">{senhaError}</span>
+            </div>
+
+            <button type="submit">Salvar Alterações</button>
           </form>
         </div>
       </div>
@@ -188,4 +234,4 @@ function CadastroUsuario() {
   );
 }
 
-export default CadastroUsuario;
+export default EditarPerfilUsuario;

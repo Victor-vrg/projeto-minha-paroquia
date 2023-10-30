@@ -10,16 +10,19 @@ import FeedbackBanner from '../components/feedbackBanner';
 import ParoquiaModel from '../../../backend/src/models/paroquiaModel';
 import EventosModel from '../../../backend/src/models/eventosModel';
 import ExcursaoModel from '../../../backend/src/models/ExcursaoModel';
-import NavigationBar from './NavigationBar'; // Importe o NavigationBar
+import NavigationBar from './NavigationBar'; 
+
 
 interface PaginaPrincipalParoquiaProps {
   paroquiaSelecionada: ParoquiaModel | null;
+  isFielDesconhecido: boolean;
 }
 
-const PaginaPrincipalParoquia: React.FC<PaginaPrincipalParoquiaProps> = ({ paroquiaSelecionada }) => {
+const PaginaPrincipalParoquia: React.FC<PaginaPrincipalParoquiaProps> = ({ paroquiaSelecionada}) => {
   const [eventos, setEventos] = useState<EventosModel[]>([]);
   const [excursao, setExcursao] = useState<ExcursaoModel[]>([]);
   const location = useLocation();
+const isFielDesconhecido = location.state?.isFielDesconhecido || false;
 
   const nomeParoquia = location.state?.nomeParoquia || localStorage.getItem('paroquiaSelecionada') || '';
 
@@ -51,7 +54,7 @@ const PaginaPrincipalParoquia: React.FC<PaginaPrincipalParoquiaProps> = ({ paroq
   return (
     <div>
       <FeedbackBanner />
-      <Header nomeParoquia={nomeParoquia} />
+      <Header nomeParoquia={nomeParoquia} isFielDesconhecido={isFielDesconhecido} />
       <div id="eventos">
         <Carrossel titulo="Eventos" eventos={eventos} />
       </div>

@@ -7,7 +7,7 @@ import FeedbackRoute from './routes/feedbackRoute';
 import usuarioRoute from './routes/usuarioRoute'
 import tokenRoute from './routes/tokenRoute'; 
 import { initializeDatabase } from './database/db'; 
-import { verifyToken } from './verificadorToken';
+import { verifyToken } from './middleware';
 
 const app = express();
 const port = 3001;
@@ -32,6 +32,7 @@ const startServer = async () => {
     app.use('/feedback', FeedbackRoute);
     app.use('/usuarios',  usuarioRoute)
     app.use('/tokens', tokenRoute);
+
   
 
     app.listen(port, () => {

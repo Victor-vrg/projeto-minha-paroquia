@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/login.css';
 
-
 function Login() {
   const [NomeCompleto, setNomeCompleto] = useState('');
   const [senha, setsenha] = useState('');
   const navigate = useNavigate();
+  const [isFielDesconhecido, setIsFielDesconhecido] = useState(false);
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault(); 
@@ -19,21 +20,27 @@ function Login() {
         Email: NomeCompleto, 
         senha,
       });
-
-      // Se a autenticação for bem-sucedida, o token será retornado
       const authToken = response.data.token;
 
       if (authToken) {
         localStorage.setItem('token', authToken);
         console.log('Login bem-sucedido:', NomeCompleto);
-        navigate('/pagina-principal-paroquia'); 
+        console.log(authToken); 
+        setIsFielDesconhecido(false);
+        navigate('/pagina-principal-paroquia', { state: { isFielDesconhecido} });
       } else {
         console.error('Token não foi recebido na resposta.');
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
-      // Lógica para lidar com erros, como exibir uma mensagem de erro para o usuário
+      
     }
+  };
+
+  const handleContinueWithoutLogin = () => {
+    localStorage.setItem('token', 'fiel-desconhecido');
+    setIsFielDesconhecido(true);
+    navigate('/pagina-principal-paroquia', { state: { isFielDesconhecido: true } });
   };
 
   return (
@@ -72,7 +79,7 @@ function Login() {
               Esqueceu a senha? <a href="/recuperar-senha">Recuperar a senha</a>
             </p>
             <p className="continue-link">
-              <a href="/pagina-principal-paroquia">Continuar sem login</a>
+              <a onClick={handleContinueWithoutLogin} href="/pagina-principal-paroquia">Continuar sem login</a>
             </p>
           </form>
         </div>
