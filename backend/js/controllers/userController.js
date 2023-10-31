@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.editarPerfil = exports.getServicosComunitarios = exports.cadastrarUsuario = exports.login = exports.getUsers = void 0;
+exports.getUsuarioLogado = exports.editarPerfil = exports.getServicosComunitarios = exports.cadastrarUsuario = exports.login = exports.getUsers = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config");
@@ -33,7 +33,7 @@ exports.getUsers = getUsers;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { NomeCompleto, Email, senha } = req.body;
     try {
-        // Verifique se NomeCompleto ou Email foram fornecidos
+        // Verifique NomeCompleto ou Email 
         if (!NomeCompleto && !Email) {
             throw new Error('Nome Completo ou Email são necessários.');
         }
@@ -42,21 +42,22 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!User) {
             throw new Error('Usuário não encontrado.');
         }
-        // Verifique a senha
         const passwordMatch = yield bcrypt_1.default.compare(senha, User.SenhaHash);
         if (!passwordMatch) {
             throw new Error('Senha incorreta.');
         }
-        // Gere um token JWT para autenticar o usuário
         const token = jsonwebtoken_1.default.sign({
             UserId: User.ID,
             nomeCompleto: User.NomeCompleto,
             email: User.Email,
+            Telefone: User.Telefone,
+            Bairro: User.Bairro,
+            DataNascimento: User.DataNascimento,
             paroquiaMaisFrequentada: User.ParoquiaMaisFrequentada,
             idServicoComunitario: User.IDServicoComunitario,
         }, config_1.secretKey, { expiresIn: '3h' });
         yield db.run('INSERT INTO Tokens (UserID, Token, Expiracao) VALUES (?, ?, ?)', [User.ID, token, new Date(new Date().getTime() + 10800000)]);
-        // Envie o token como resposta
+        console.log('Token gerado:', token);
         res.json({ token });
     }
     catch (error) {
@@ -92,22 +93,82 @@ const getServicosComunitarios = (req, res) => __awaiter(void 0, void 0, void 0, 
 });
 exports.getServicosComunitarios = getServicosComunitarios;
 const editarPerfil = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { UserId } = req.user;
-    // Você deve extrair o ID do usuário do token
-    const { NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, IDServicoComunitario } = req.body;
+    const token = req.header('Authorization');
+    if (!token) {
+        return res.status(401).json({ error: 'Token não fornecido' });
+    }
     try {
+        const decodedToken = jsonwebtoken_1.default.verify(token, config_1.secretKey);
         const db = (0, db_1.getDatabaseInstance)();
-        const existingUser = yield db.get('SELECT * FROM Usuarios WHERE ID = ?', [UserId]);
-        if (!existingUser) {
-            return res.status(404).json({ error: 'Usuário não encontrado' });
+        const user = yield db.get('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
+        if (!user) {
+            return res.status(401).json({ error: 'Usuário associado ao token não encontrado' });
         }
-        // Implemente a lógica para atualizar o perfil do usuário no banco de dados
-        yield db.run('UPDATE Usuarios SET NomeCompleto = ?, Email = ?, Telefone = ?, Bairro = ?, ParoquiaMaisFrequentada = ?, DataNascimento = ?, IDServicoComunitario = ? WHERE ID = ?', [NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, IDServicoComunitario, UserId]);
-        res.json({ message: 'Perfil atualizado com sucesso.' });
+        // Dados a serem atualizados
+        const { NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, IDServicoComunitario, NovaSenha } = req.body;
+        // Verifique se os campos a serem atualizados estão presentes no corpo da solicitação
+        if (NomeCompleto) {
+            user.NomeCompleto = NomeCompleto;
+        }
+        if (Email) {
+            user.Email = Email;
+        }
+        if (Telefone) {
+            user.Telefone = Telefone;
+        }
+        if (Bairro) {
+            user.Bairro = Bairro;
+        }
+        if (ParoquiaMaisFrequentada) {
+            user.ParoquiaMaisFrequentada = ParoquiaMaisFrequentada;
+        }
+        if (DataNascimento) {
+            user.DataNascimento = DataNascimento;
+        }
+        if (IDServicoComunitario) {
+            user.IDServicoComunitario = IDServicoComunitario;
+        }
+        if (NovaSenha) {
+            const senhaHash = yield bcrypt_1.default.hash(NovaSenha, 10);
+            user.SenhaHash = senhaHash;
+        }
+        // Atualize o perfil do usuário no banco de dados
+        yield db.run('UPDATE Usuarios SET NomeCompleto = ?, Email = ?, Telefone = ?, Bairro = ?, ParoquiaMaisFrequentada = ?, DataNascimento = ?, IDServicoComunitario = ?, SenhaHash = ? WHERE ID = ?', [user.NomeCompleto, user.Email, user.Telefone, user.Bairro, user.ParoquiaMaisFrequentada, user.DataNascimento, user.IDServicoComunitario, user.SenhaHash, user.ID]);
+        res.json({ message: 'Perfil atualizado com sucesso' });
     }
     catch (error) {
-        console.error('Erro ao editar perfil:', error);
-        res.status(500).json({ error: 'Erro interno do servidor' });
+        res.status(401).json({ error: 'Token inválido ou expirado' });
     }
 });
 exports.editarPerfil = editarPerfil;
+const getUsuarioLogado = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.header('Authorization');
+    if (!token) {
+        return res.status(401).json({ error: 'Token não fornecido' });
+    }
+    try {
+        const decodedToken = jsonwebtoken_1.default.verify(token, config_1.secretKey);
+        const db = (0, db_1.getDatabaseInstance)();
+        const user = yield db.get('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
+        if (!user) {
+            return res.status(401).json({ error: 'Usuário associado ao token não encontrado' });
+        }
+        // Você pode ajustar os campos de resposta conforme necessário
+        const userData = {
+            UserId: decodedToken.UserId,
+            nomeCompleto: user.NomeCompleto,
+            email: user.Email,
+            telefone: user.Telefone,
+            bairro: user.Bairro,
+            dataNascimento: user.DataNascimento,
+            paroquiaMaisFrequentada: user.ParoquiaMaisFrequentada,
+            idServicoComunitario: user.IDServicoComunitario,
+        };
+        res.json(userData);
+        console.log(userData);
+    }
+    catch (error) {
+        res.status(401).json({ error: 'Token inválido ou expirado' });
+    }
+});
+exports.getUsuarioLogado = getUsuarioLogado;

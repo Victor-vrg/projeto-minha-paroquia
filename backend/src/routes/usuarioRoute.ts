@@ -1,13 +1,18 @@
 import express from 'express';
 import { verifyToken } from '../middleware';
-import {login , getUsers, cadastrarUsuario, getServicosComunitarios, editarPerfil } from '../controllers/userController';
+import {login , getUsers, cadastrarUsuario, getServicosComunitarios, editarPerfil, getUsuarioLogado } from '../controllers/userController';
 
 const router = express.Router();
 
-router.post('/login',  login);
-router.get('/getUsers' , verifyToken, getUsers) // somente admin-paroquia pode ver, e sem ver senha!
 router.post('/cadastrar', cadastrarUsuario);
-router.get('/servicos-comunitarios', getServicosComunitarios);
+router.post('/login', login);
+
+router.get('/usuario-logado',verifyToken, getUsuarioLogado);
 router.put('/editar-perfil', verifyToken, editarPerfil)
+
+router.get('/getUsers' , getUsers) 
+
+router.get('/servicos-comunitarios', getServicosComunitarios);
+
 
 export default router;

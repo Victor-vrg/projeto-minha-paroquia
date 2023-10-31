@@ -7,9 +7,10 @@ const express_1 = __importDefault(require("express"));
 const middleware_1 = require("../middleware");
 const userController_1 = require("../controllers/userController");
 const router = express_1.default.Router();
-router.post('/login', userController_1.login);
-router.get('/getUsers', middleware_1.verifyToken, userController_1.getUsers); // somente admin-paroquia pode ver, e sem ver senha!
 router.post('/cadastrar', userController_1.cadastrarUsuario);
-router.get('/servicos-comunitarios', userController_1.getServicosComunitarios);
+router.post('/login', userController_1.login);
+router.get('/usuario-logado', middleware_1.verifyToken, userController_1.getUsuarioLogado);
 router.put('/editar-perfil', middleware_1.verifyToken, userController_1.editarPerfil);
+router.get('/getUsers', userController_1.getUsers);
+router.get('/servicos-comunitarios', userController_1.getServicosComunitarios);
 exports.default = router;

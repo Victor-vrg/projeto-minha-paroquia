@@ -26,7 +26,6 @@ const enviarEmailRecuperacao = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         // Gere um token de recuperação
         const token = generateRandomToken();
-        // Salve o token no banco de dados
         yield db.run('INSERT INTO Tokens (UserID, Token, Expiracao) VALUES (?, ?, ?)', [user.ID, token, new Date(new Date().getTime() + 3600000)]);
         const transporter = config_1.EmailParoquia;
         const mailOptions = {

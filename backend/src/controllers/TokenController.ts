@@ -7,19 +7,14 @@ import { getDatabaseInstance } from '../database/db';
 
 export const enviarEmailRecuperacao = async (req: Request, res: Response) => {
   const { email } = req.body;
-
   try {
     const db = getDatabaseInstance();
     const user = await db.get<UsuarioModel>('SELECT * FROM Usuarios WHERE Email = ?', [email]);
-
     if (!user) {
       throw new Error('Usuário não encontrado.');
     }
-
     // Gere um token de recuperação
     const token = generateRandomToken(); 
-
-    // Salve o token no banco de dados
     await db.run(
       'INSERT INTO Tokens (UserID, Token, Expiracao) VALUES (?, ?, ?)',
       [user.ID, token, new Date(new Date().getTime() + 3600000)]

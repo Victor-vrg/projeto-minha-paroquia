@@ -1,32 +1,41 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken'; 
 import { secretKey } from './config';
 import { NextFunction, Request, Response } from 'express';
 import { getDatabaseInstance } from './database/db';
-
+import UsuarioModel from './models/usuarioModel';
 
 export const verifyToken = async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
   const token = req.header('Authorization');
-
+  console.log('Received token:', token);
   if (!token) {
     return res.status(401).json({ error: 'Token não fornecido' });
   }
 
-  const db = getDatabaseInstance();
-  const row = await db.get('SELECT Token FROM Tokens WHERE Token = ? AND Expiracao > ?', [token, new Date()]);
-
-  if (!row) {
-    return res.status(401).json({ error: 'Token inválido ou expirado' });
-  }
-
   try {
-    const decodedToken = jwt.verify(token, secretKey);
-    req.user = decodedToken;
+    const decodedToken = jwt.verify(token, secretKey) as JwtPayload; 
+    const db = getDatabaseInstance();
+    const user = await db.get<UsuarioModel>('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
+
+    if (!user) {
+      return res.status(401).json({ error: 'Usuário associado ao token não encontrado' });
+    }
+
+    req.user = {
+      UserId: decodedToken.UserId,
+      nomeCompleto: user.NomeCompleto,
+      email: user.Email,
+      Telefone: user.Telefone,
+      Bairro: user.Bairro,
+      DataNascimento: user.DataNascimento,
+      paroquiaMaisFrequentada: user.ParoquiaMaisFrequentada,
+      idServicoComunitario: user.IDServicoComunitario,
+    };
+
     next();
   } catch (error) {
-    res.status(401).json({ error: 'Token inválido' });
+    res.status(401).json({ error: 'Token inválido ou expirado' });
   }
 };
-
 
 export const checkUserRole = (role: string, serviceId: number) => {
   return async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
@@ -35,7 +44,6 @@ export const checkUserRole = (role: string, serviceId: number) => {
     if (!token) {
       return res.status(401).json({ error: 'Token não fornecido' });
     }
-
     try {
       const decodedToken = jwt.verify(token, secretKey);
       const user = decodedToken as { id: number };

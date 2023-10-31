@@ -29,7 +29,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ nomeParoquia, isFielDesconhecido }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [open, setOpen] = useState(false);
-
+  const authToken = localStorage.getItem('token');
   const navigate = useNavigate();
 
   const handleMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ nomeParoquia, isFielDesconhecido }) => 
     if (!localStorage.getItem('token')) {
       navigate('/login');
     } else {
-      navigate('/painel-adm');
+      navigate('/painel-adm', { state: { authToken } });
     }
   };
 
