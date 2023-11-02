@@ -11,6 +11,7 @@ interface EventosModel {
   TipoEvento: string;
   Participacao: 'Sim' | 'Talvez' | 'Não';
   Destaque: number;
+  Ocultar: number;
   ParoquiaID: number;
 }
 export default EventosModel

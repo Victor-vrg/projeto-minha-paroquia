@@ -32,7 +32,11 @@ function App() {
         <Route path="/continuar-sem-login"  element={<Navigate  to="/pagina-principal-paroquia"  />} />
         <Route path="/recuperar-senha" element={<RecuperacaoSenha />} />
         <Route path="/" element={<Navigate to="/escolha-paroquia" />} />
-        <Route path="/Painel-adm" element={<PrivateRoute><PainelAdm /></PrivateRoute>} />
+        <Route path="/Painel-adm" element={
+            <PrivateRoute>
+              {(userAccess) => <PainelAdm userAccess={userAccess} />}
+            </PrivateRoute>
+          } />
       </Routes>
     </div>
   </BrowserRouter>

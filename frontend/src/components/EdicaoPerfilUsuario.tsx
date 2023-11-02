@@ -129,7 +129,6 @@ function EditarPerfilUsuario() {
         NovaSenha: '',
       };
   
-      // Verifique se a senha está sendo alterada e inclua-a no objeto `data` se estiver
       if (novaSenha) {
         data.NovaSenha = novaSenha;
       }

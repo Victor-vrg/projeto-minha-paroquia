@@ -11,6 +11,7 @@ export default interface ExcursaoModel {
     PrecoExcursao: number;
     VagasExcursao: number;
     ParoquiaID: number;
+    Ocultar: number;
     Destaque: number;
   }
   

@@ -8,7 +8,7 @@ function Login() {
   const [senha, setsenha] = useState('');
   const navigate = useNavigate();
   const [isFielDesconhecido, setIsFielDesconhecido] = useState(false);
-
+  const [error, setError] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault(); 
@@ -33,7 +33,7 @@ function Login() {
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
-      
+      setError('Erro ao fazer login. Verifique seu nome de usuário e senha.');
     }
   };
 
@@ -72,6 +72,7 @@ function Login() {
             <button className='login-button' type="submit" onClick={handleLogin}>
               Entrar
             </button>
+            {error && <div className="error-message">{error}</div>}
             <p className="signup-link">
               Não tem usuário? <a href="/cadastro">Cadastre-se</a>
             </p>

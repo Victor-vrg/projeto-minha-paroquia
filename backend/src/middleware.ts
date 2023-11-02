@@ -3,6 +3,7 @@ import { secretKey } from './config';
 import { NextFunction, Request, Response } from 'express';
 import { getDatabaseInstance } from './database/db';
 import UsuarioModel from './models/usuarioModel';
+import { ServicoComunitario } from './models/ServicoComunitarioModels';
 
 export const verifyToken = async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
   const token = req.header('Authorization');
@@ -12,7 +13,7 @@ export const verifyToken = async (req: Request & { user?: any }, res: Response, 
   }
 
   try {
-    const decodedToken = jwt.verify(token, secretKey) as JwtPayload; 
+    const decodedToken = jwt.verify(token, secretKey) as JwtPayload;
     const db = getDatabaseInstance();
     const user = await db.get<UsuarioModel>('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
 
@@ -37,7 +38,7 @@ export const verifyToken = async (req: Request & { user?: any }, res: Response, 
   }
 };
 
-export const checkUserRole = (role: string, serviceId: number) => {
+export const checkUserAccess = (IDServicoComunitario: number) => {
   return async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
     const token = req.header('Authorization');
 
@@ -45,14 +46,16 @@ export const checkUserRole = (role: string, serviceId: number) => {
       return res.status(401).json({ error: 'Token não fornecido' });
     }
     try {
-      const decodedToken = jwt.verify(token, secretKey);
-      const user = decodedToken as { id: number };
-      // Consulte o banco de dados para verificar o nível de acesso do usuário no serviço comunitário especificado
+      const decodedToken = jwt.verify(token, secretKey) as JwtPayload;
       const db = getDatabaseInstance();
-      const userAccess = await db.get('SELECT NivelAcessoNoServico FROM Usuarios_ServicosComunitarios WHERE UsuarioID = ? AND ServicoComunitarioID = ?', [user.id, serviceId]);
-
-      if (userAccess && userAccess.NivelAcessoNoServico === role) {
-        req.user = user;
+      const user = await db.get<UsuarioModel>('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
+    if (!user) {
+      return res.status(401).json({ error: 'Usuário associado ao token não encontrado' });
+    }
+      const userAccess = await db.get('SELECT NivelAcessoNoServico FROM Usuarios_ServicosComunitarios WHERE UsuarioID = ? AND ServicoComunitarioID = ?', [user.ID, IDServicoComunitario]);
+      console.log("acesso do usuario", userAccess)
+      if (userAccess && userAccess.NivelAcessoNoServico < 5) {
+        // O nível de acesso é menor que 5, continue.
         next();
       } else {
         return res.status(403).json({ error: 'Acesso não autorizado para este serviço comunitário' });
@@ -62,3 +65,4 @@ export const checkUserRole = (role: string, serviceId: number) => {
     }
   };
 };
+

@@ -58,7 +58,9 @@ const createTables = async () => {
         CaminhoImagem     VARCHAR (255),
         TipoEvento        VARCHAR (150),
         Participacao      TEXT          CHECK (Participacao IN ('Sim', 'Talvez', 'Não') ),
+        Participacao      DEFAULT '',
         Destaque          INTEGER       DEFAULT 0,
+        Ocultar          INTEGER       DEFAULT 0,
         ParoquiaID        INT
     );
     
@@ -93,6 +95,7 @@ const createTables = async () => {
         ParoquiaID          INT,
         CaminhoImagem       VARCHAR (255),
         Destaque            INTEGER       DEFAULT 0,
+        Ocultar          INTEGER       DEFAULT 0,
         FOREIGN KEY (
             ParoquiaID
         )
@@ -226,6 +229,7 @@ const createTables = async () => {
 CREATE TABLE IF NOT EXISTS Usuarios_ServicosComunitarios (
   ID                     INTEGER       PRIMARY KEY AUTOINCREMENT,
   UsuarioID              INT,
+  nomeServicoComunitario VARCHAR (255),
   ServicoComunitarioID   INT,
   NivelAcessoNoServico   INT,
   FOREIGN KEY (UsuarioID) REFERENCES Usuarios (ID),

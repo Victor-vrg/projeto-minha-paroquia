@@ -1,22 +1,37 @@
-import React, { useEffect } from "react";
-import { useNavigate  } from "react-router-dom";
+import React, { useEffect, useState, ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const PrivateRoute = <Component extends React.ReactNode>({ children }: { children: Component }) => {
+interface PrivateRouteProps {
+  children: (userAccess: any[]) => ReactNode;
+}
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const authToken = localStorage.getItem('token');
   const navigate = useNavigate();
+  const [userAccess, setUserAccess] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log("token passando pela rota privada!",authToken);
-
     if (!authToken || authToken === 'fiel-desconhecido') {
       navigate('/pagina-principal-paroquia');
+    } else {
+      axios
+        .get('http://localhost:3001/role/niveis-de-acesso', {
+          headers: {
+            Authorization: authToken,
+          },
+        })
+        .then((response) => {
+          setUserAccess(response.data);
+        })
+        .catch((error) => {
+          console.error('Erro ao obter nível de acesso do usuário:', error);
+          navigate('/pagina-principal-paroquia');
+        });
     }
   }, [authToken, navigate]);
 
-  return <>{children}</>;
+  return <>{children(userAccess)}</>;
 };
 
-
 export default PrivateRoute;
-
-

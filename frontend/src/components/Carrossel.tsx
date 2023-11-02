@@ -91,9 +91,6 @@ const Carrossel: React.FC<CarrosselProps> = ({ titulo, eventos }) => {
                     <p>
                       <strong>Detalhes:</strong> {evento.DescricaoEvento}
                     </p>
-                    <button className="participacao-button">
-                      Participação: {evento.Participacao}
-                    </button>
                   </div>
                 )}
               </div>

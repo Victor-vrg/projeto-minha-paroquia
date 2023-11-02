@@ -91,9 +91,6 @@ const CarrosselExcursao: React.FC<CarrosselExcursaoProps> = ({ titulo, excursao 
                     <p>
                       <strong>Detalhes:</strong> {excursao.DescricaoExcursao}
                     </p>
-                    <button className="participacao-button">
-                      Participação: 
-                    </button>
                   </div>
                 )}
               </div>

@@ -6,6 +6,7 @@ import ExcursaoRoute from './routes/ExcursaoRoute';
 import FeedbackRoute from './routes/feedbackRoute';
 import usuarioRoute from './routes/usuarioRoute'
 import tokenRoute from './routes/tokenRoute'; 
+import  ServicoComunitario  from './routes/ServicoComunitarioRoute';
 import { initializeDatabase } from './database/db'; 
 import { verifyToken } from './middleware';
 
@@ -32,6 +33,7 @@ const startServer = async () => {
     app.use('/feedback', FeedbackRoute);
     app.use('/usuarios',  usuarioRoute)
     app.use('/tokens', tokenRoute);
+    app.use('/role', ServicoComunitario);
 
   
 

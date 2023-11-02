@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkUserRole = exports.verifyToken = void 0;
+exports.checkUserAccess = exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("./config");
 const db_1 = require("./database/db");
@@ -46,7 +46,7 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.verifyToken = verifyToken;
-const checkUserRole = (role, serviceId) => {
+const checkUserAccess = (IDServicoComunitario) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         const token = req.header('Authorization');
         if (!token) {
@@ -54,12 +54,15 @@ const checkUserRole = (role, serviceId) => {
         }
         try {
             const decodedToken = jsonwebtoken_1.default.verify(token, config_1.secretKey);
-            const user = decodedToken;
-            // Consulte o banco de dados para verificar o nível de acesso do usuário no serviço comunitário especificado
             const db = (0, db_1.getDatabaseInstance)();
-            const userAccess = yield db.get('SELECT NivelAcessoNoServico FROM Usuarios_ServicosComunitarios WHERE UsuarioID = ? AND ServicoComunitarioID = ?', [user.id, serviceId]);
-            if (userAccess && userAccess.NivelAcessoNoServico === role) {
-                req.user = user;
+            const user = yield db.get('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
+            if (!user) {
+                return res.status(401).json({ error: 'Usuário associado ao token não encontrado' });
+            }
+            const userAccess = yield db.get('SELECT NivelAcessoNoServico FROM Usuarios_ServicosComunitarios WHERE UsuarioID = ? AND ServicoComunitarioID = ?', [user.ID, IDServicoComunitario]);
+            console.log("acesso do usuario", userAccess);
+            if (userAccess && userAccess.NivelAcessoNoServico < 5) {
+                // O nível de acesso é menor que 5, continue.
                 next();
             }
             else {
@@ -71,4 +74,4 @@ const checkUserRole = (role, serviceId) => {
         }
     });
 };
-exports.checkUserRole = checkUserRole;
+exports.checkUserAccess = checkUserAccess;
