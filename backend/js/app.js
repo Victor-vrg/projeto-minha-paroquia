@@ -22,9 +22,9 @@ const usuarioRoute_1 = __importDefault(require("./routes/usuarioRoute"));
 const tokenRoute_1 = __importDefault(require("./routes/tokenRoute"));
 const ServicoComunitarioRoute_1 = __importDefault(require("./routes/ServicoComunitarioRoute"));
 const db_1 = require("./database/db");
+require('dotenv').config();
 const app = (0, express_1.default)();
 const port = 3001;
-const path = require('path');
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {

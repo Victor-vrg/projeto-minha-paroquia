@@ -14,8 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkUserAccess = exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const config_1 = require("./config");
-const db_1 = require("./database/db");
+const pg_1 = require("pg");
+const pool = new pg_1.Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DATABASE,
+    password: process.env.DB_PASS,
+    port: 5432,
+});
 const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.header('Authorization');
     console.log('Received token:', token);
@@ -23,9 +29,12 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return res.status(401).json({ error: 'Token não fornecido' });
     }
     try {
-        const decodedToken = jsonwebtoken_1.default.verify(token, config_1.secretKey);
-        const db = (0, db_1.getDatabaseInstance)();
-        const user = yield db.get('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
+        const secretKey = process.env.secretKey;
+        const decodedToken = jsonwebtoken_1.default.verify(token, secretKey);
+        const client = yield pool.connect();
+        const result = yield client.query('SELECT * FROM Usuarios WHERE ID = $1', [decodedToken.UserId]);
+        client.release();
+        const user = result.rows[0];
         if (!user) {
             return res.status(401).json({ error: 'Usuário associado ao token não encontrado' });
         }
@@ -53,15 +62,18 @@ const checkUserAccess = (IDServicoComunitario) => {
             return res.status(401).json({ error: 'Token não fornecido' });
         }
         try {
-            const decodedToken = jsonwebtoken_1.default.verify(token, config_1.secretKey);
-            const db = (0, db_1.getDatabaseInstance)();
-            const user = yield db.get('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
+            const secretKey = process.env.secretKey;
+            const decodedToken = jsonwebtoken_1.default.verify(token, secretKey);
+            const client = yield pool.connect();
+            const result = yield client.query('SELECT * FROM Usuarios WHERE ID = $1', [decodedToken.UserId]);
+            client.release();
+            const user = result.rows[0];
             if (!user) {
                 return res.status(401).json({ error: 'Usuário associado ao token não encontrado' });
             }
-            const userAccess = yield db.get('SELECT NivelAcessoNoServico FROM Usuarios_ServicosComunitarios WHERE UsuarioID = ? AND ServicoComunitarioID = ?', [user.ID, IDServicoComunitario]);
-            console.log("acesso do usuario", userAccess);
-            if (userAccess && userAccess.NivelAcessoNoServico < 5) {
+            const userAccess = yield client.query('SELECT NivelAcessoNoServico FROM Usuarios_ServicosComunitarios WHERE UsuarioID = $1 AND ServicoComunitarioID = $2', [user.ID, IDServicoComunitario]);
+            console.log("acesso do usuario", userAccess.rows[0]);
+            if (userAccess.rows[0] && userAccess.rows[0].NivelAcessoNoServico < 5) {
                 // O nível de acesso é menor que 5, continue.
                 next();
             }

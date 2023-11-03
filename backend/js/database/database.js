@@ -1,87 +1,53 @@
-import { Client } from 'pg';
-require('dotenv').config()
-
-const connectionString = process.env.DB_CONNECTION
-const DB_USER = process.env.DB_USER
-const DB_HOST = process.env.DB_HOST
-const DATABASE = process.env.DATABASE
-const DB_PASS = process.env.DB_PASS
-
-
-const client = new Client({
-  connectionString: connectionString,
-  user: DB_USER,
-  host: DB_HOST,
-  database: DATABASE,
-  password: DB_PASS,
-  port: 5432,
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDatabaseInstance = exports.initializeDatabase = exports.dbInstance = void 0;
+const pg_1 = require("pg");
+const DB_USER = process.env.DB_USER;
+const DB_HOST = process.env.DB_HOST;
+const DATABASE = process.env.DATABASE;
+const DB_PASS = process.env.DB_PASS;
+const client = new pg_1.Client({
+    user: DB_USER,
+    host: DB_HOST,
+    database: DATABASE,
+    password: DB_PASS,
+    port: 5432,
 });
-
-export let dbInstance: Client | null = null;
-
-export const initializeDatabase = async (): Promise<void> => {
-  try {
-    await client.connect();
-    dbInstance = client;
-
-    console.log('Conexão com o banco de dados PostgreSQL estabelecida!');
-
-    await createTables();
-    await insertTestData();
-
-    console.log('Dados de teste inseridos com sucesso!');
-  } catch (error) {
-    console.error('Erro ao conectar ao banco de dados:', error);
-    throw error;
-  }
+exports.dbInstance = null;
+const initializeDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield client.connect();
+        exports.dbInstance = client;
+        console.log('Conexão com o banco de dados PostgreSQL estabelecida!');
+        yield createTables();
+        yield insertTestData();
+        console.log('Dados de teste inseridos com sucesso!');
+    }
+    catch (error) {
+        console.error('Erro ao conectar ao banco de dados:', error);
+        throw error;
+    }
+});
+exports.initializeDatabase = initializeDatabase;
+const getDatabaseInstance = () => {
+    if (!exports.dbInstance) {
+        throw new Error('Banco de dados não inicializado.');
+    }
+    return exports.dbInstance;
 };
-
-export const getDatabaseInstance = (): Client => {
-  if (!dbInstance) {
-    throw new Error('Banco de dados não inicializado.');
-  }
-  return dbInstance;
-};
-
-const createTables = async () => {
-  try {
-    await dbInstance?.query(`
-    CREATE TABLE IF NOT EXISTS Paroquias (
-      ID                    SERIAL PRIMARY KEY,
-      NomeParoquia          VARCHAR(255) NOT NULL,
-      Padres                VARCHAR(255),
-      CEP                   VARCHAR(10) NOT NULL,
-      LocalizacaoParoquia   VARCHAR(255),
-      Bairro                VARCHAR(255),
-      InformacoesAdicionais TEXT,
-      EmailResponsavel      VARCHAR(255) NOT NULL
-  );
-  CREATE TABLE IF NOT EXISTS ServicosComunitarios (
-    ID                     SERIAL PRIMARY KEY,
-    nomeServicoComunitario VARCHAR(150),
-    DescricaoServico       VARCHAR(255),
-    ObjetivosServico       TEXT,
-    PublicoAlvoServico     VARCHAR(255),
-    TipoServicoComunitario VARCHAR(150),
-    ParoquiaID             INT,
-    Ativo                  BOOLEAN,
-    FOREIGN KEY (ParoquiaID) REFERENCES Paroquias (ID)
-);
-  CREATE TABLE IF NOT EXISTS Usuarios (
-    ID                      SERIAL PRIMARY KEY,
-    NomeCompleto            VARCHAR(255) NOT NULL,
-    Email                   VARCHAR(255) NOT NULL,
-    Telefone                VARCHAR(20),
-    Bairro                  VARCHAR(255),
-    DataNascimento          DATE,
-    ParoquiaMaisFrequentada INT,
-    IDServicoComunitario    INT,
-    SenhaHash               VARCHAR(255) NOT NULL,
-    FOREIGN KEY (ParoquiaMaisFrequentada) REFERENCES Paroquias (ID),
-    FOREIGN KEY (IDServicoComunitario) REFERENCES ServicosComunitarios (ID)
-);
-    
-  
+exports.getDatabaseInstance = getDatabaseInstance;
+const createTables = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (exports.dbInstance === null || exports.dbInstance === void 0 ? void 0 : exports.dbInstance.query(`
     CREATE TABLE IF NOT EXISTS Feedback (
         ID             SERIAL PRIMARY KEY,
         NomeUsuario    VARCHAR(255) NOT NULL,
@@ -107,7 +73,7 @@ const createTables = async () => {
         ParoquiaID        INT
     );
     
-    CREATE TABLE IF NOT EXISTS EventosServicosComunitarios (
+    CREATE TABLE IF NOT EXISTS Eventos_ServicosComunitarios (
         EventoID             INT,
         ServicoComunitarioID INT,
         PRIMARY KEY (EventoID, ServicoComunitarioID),
@@ -115,7 +81,6 @@ const createTables = async () => {
         FOREIGN KEY (ServicoComunitarioID) REFERENCES ServicosComunitarios (ID)
     );
     
-
     CREATE TABLE IF NOT EXISTS Excursoes (
         ID                  SERIAL PRIMARY KEY,
         NomeExcursao        VARCHAR(255),
@@ -143,7 +108,16 @@ const createTables = async () => {
         FOREIGN KEY (ServicoComunitarioID) REFERENCES ServicosComunitarios (ID)
     );
     
-   
+    CREATE TABLE IF NOT EXISTS Paroquias (
+        ID                    SERIAL PRIMARY KEY,
+        NomeParoquia          VARCHAR(255) NOT NULL,
+        Padres                VARCHAR(255),
+        CEP                   VARCHAR(10) NOT NULL,
+        LocalizacaoParoquia   VARCHAR(255),
+        Bairro                VARCHAR(255),
+        InformacoesAdicionais TEXT,
+        EmailResponsavel      VARCHAR(255) NOT NULL
+    );
     
     CREATE TABLE IF NOT EXISTS ParticipacoesEventos (
         ID           SERIAL PRIMARY KEY,
@@ -166,8 +140,19 @@ const createTables = async () => {
         DataSolicitacao        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     
-   
-    CREATE TABLE IF NOT EXISTS ExcursaoServicoComunitario (
+    CREATE TABLE IF NOT EXISTS ServicosComunitarios (
+        ID                     SERIAL PRIMARY KEY,
+        nomeServicoComunitario VARCHAR(150),
+        DescricaoServico       VARCHAR(255),
+        ObjetivosServico       TEXT,
+        PublicoAlvoServico     VARCHAR(255),
+        TipoServicoComunitario VARCHAR(150),
+        ParoquiaID             INT,
+        Ativo                  BOOLEAN,
+        FOREIGN KEY (ParoquiaID) REFERENCES Paroquias (ID)
+    );
+    
+    CREATE TABLE IF NOT EXISTS Excursao_ServicoComunitario (
         ExcursaoID              INT,
         ServicoComunitarioID    INT,
         PRIMARY KEY (ExcursaoID, ServicoComunitarioID),
@@ -183,7 +168,19 @@ const createTables = async () => {
         FOREIGN KEY (UserID) REFERENCES Usuarios (ID)
     );
     
-    
+    CREATE TABLE IF NOT EXISTS Usuarios (
+        ID                      SERIAL PRIMARY KEY,
+        NomeCompleto            VARCHAR(255) NOT NULL,
+        Email                   VARCHAR(255) NOT NULL,
+        Telefone                VARCHAR(20),
+        Bairro                  VARCHAR(255),
+        DataNascimento          DATE,
+        ParoquiaMaisFrequentada INT,
+        IDServicoComunitario    INT,
+        SenhaHash               VARCHAR(255) NOT NULL,
+        FOREIGN KEY (ParoquiaMaisFrequentada) REFERENCES Paroquias (ID),
+        FOREIGN KEY (IDServicoComunitario) REFERENCES ServicosComunitarios (ID)
+    );
     
     CREATE TABLE IF NOT EXISTS LogAtividades (
         ID               SERIAL PRIMARY KEY,
@@ -195,7 +192,7 @@ const createTables = async () => {
         FOREIGN KEY (UsuarioID) REFERENCES Usuarios (ID)
     );
     
-    CREATE TABLE IF NOT EXISTS UsuariosServicosComunitarios (
+    CREATE TABLE IF NOT EXISTS Usuarios_ServicosComunitarios (
         ID                     SERIAL PRIMARY KEY,
         UsuarioID              INT,
         nomeServicoComunitario VARCHAR(255),
@@ -206,22 +203,21 @@ const createTables = async () => {
     );
     
 
-    `);
-
-    console.log('Tabelas criadas com sucesso.');
-  } catch (error) {
-    console.error('Erro na criação das tabelas:', error);
-    throw error;
-  }
-};
-
-const insertTestData = async () => {
-  try {
-   
-    console.log('Dados de teste inseridos com sucesso!');
-  } catch (error) {
-    console.error('Erro ao inserir dados de teste:', error);
-    throw error;
-  }
-};
-
+    `));
+        console.log('Tabelas criadas com sucesso.');
+    }
+    catch (error) {
+        console.error('Erro na criação das tabelas:', error);
+        throw error;
+    }
+});
+const insertTestData = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Inserir novos dados de teste aqui
+        console.log('Dados de teste inseridos com sucesso!');
+    }
+    catch (error) {
+        console.error('Erro ao inserir dados de teste:', error);
+        throw error;
+    }
+});

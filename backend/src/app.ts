@@ -9,10 +9,10 @@ import tokenRoute from './routes/tokenRoute';
 import  ServicoComunitario  from './routes/ServicoComunitarioRoute';
 import { initializeDatabase } from './database/db'; 
 
-
+require('dotenv').config()
 const app = express();
 const port = 3001;
-const path = require('path');
+
 
 app.use(cors());
 app.use(express.json());

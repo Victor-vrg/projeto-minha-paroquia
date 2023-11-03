@@ -15,14 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUsuarioLogado = exports.editarPerfil = exports.getServicosComunitarios = exports.cadastrarUsuario = exports.login = exports.getUsers = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const config_1 = require("../config");
-const db_1 = require("../database/db");
-// Controlador para buscar todos os usuários
+const pg_1 = require("pg");
+const pool = new pg_1.Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DATABASE,
+    password: process.env.DB_PASS,
+    port: 5432,
+});
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const db = (0, db_1.getDatabaseInstance)();
-        const users = yield db.all('SELECT * FROM Usuarios');
-        res.json(users);
+        const query = 'SELECT * FROM Usuarios';
+        const { rows } = yield pool.query(query);
+        res.json(rows);
     }
     catch (error) {
         console.error('Erro ao buscar usuários:', error);
@@ -33,30 +38,33 @@ exports.getUsers = getUsers;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { NomeCompleto, Email, senha } = req.body;
     try {
-        // Verifique NomeCompleto ou Email 
         if (!NomeCompleto && !Email) {
             throw new Error('Nome Completo ou Email são necessários.');
         }
-        const db = (0, db_1.getDatabaseInstance)();
-        const User = yield db.get('SELECT * FROM Usuarios WHERE NomeCompleto = ? OR Email = ?', [NomeCompleto, Email]);
-        if (!User) {
+        const query = 'SELECT * FROM Usuarios WHERE NomeCompleto = $1 OR Email = $2';
+        const { rows } = yield pool.query(query, [NomeCompleto, Email]);
+        if (rows.length === 0) {
             throw new Error('Usuário não encontrado.');
         }
-        const passwordMatch = yield bcrypt_1.default.compare(senha, User.SenhaHash);
+        const user = rows[0];
+        const passwordMatch = yield bcrypt_1.default.compare(senha, user.SenhaHash);
         if (!passwordMatch) {
             throw new Error('Senha incorreta.');
         }
+        const secretKey = process.env.secretKey;
         const token = jsonwebtoken_1.default.sign({
-            UserId: User.ID,
-            nomeCompleto: User.NomeCompleto,
-            email: User.Email,
-            Telefone: User.Telefone,
-            Bairro: User.Bairro,
-            DataNascimento: User.DataNascimento,
-            paroquiaMaisFrequentada: User.ParoquiaMaisFrequentada,
-            idServicoComunitario: User.IDServicoComunitario,
-        }, config_1.secretKey, { expiresIn: '3h' });
-        yield db.run('INSERT INTO Tokens (UserID, Token, Expiracao) VALUES (?, ?, ?)', [User.ID, token, new Date(new Date().getTime() + 10800000)]);
+            UserId: user.ID,
+            nomeCompleto: user.NomeCompleto,
+            email: user.Email,
+            Telefone: user.Telefone,
+            Bairro: user.Bairro,
+            DataNascimento: user.DataNascimento,
+            paroquiaMaisFrequentada: user.ParoquiaMaisFrequentada,
+            idServicoComunitario: user.IDServicoComunitario,
+        }, secretKey, { expiresIn: '3h' });
+        const expiration = new Date(new Date().getTime() + 10800000);
+        const tokenQuery = 'INSERT INTO Tokens (UserID, Token, Expiracao) VALUES ($1, $2, $3)';
+        yield pool.query(tokenQuery, [user.ID, token, expiration]);
         console.log('Token gerado:', token);
         res.json({ token });
     }
@@ -70,8 +78,8 @@ const cadastrarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const { NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, IDServicoComunitario } = req.body;
     try {
         const senhaHash = yield bcrypt_1.default.hash(req.body.senha, 10);
-        const db = (0, db_1.getDatabaseInstance)();
-        yield db.run('INSERT INTO Usuarios (NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, SenhaHash, IDServicoComunitario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, senhaHash, IDServicoComunitario]);
+        const query = 'INSERT INTO Usuarios (NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, SenhaHash, IDServicoComunitario) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
+        yield pool.query(query, [NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, senhaHash, IDServicoComunitario]);
         res.json({ message: 'Usuário cadastrado com sucesso.' });
     }
     catch (error) {
@@ -82,9 +90,9 @@ const cadastrarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.cadastrarUsuario = cadastrarUsuario;
 const getServicosComunitarios = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const db = (0, db_1.getDatabaseInstance)();
-        const servicosComunitarios = yield db.all('SELECT * FROM ServicosComunitarios');
-        res.json(servicosComunitarios);
+        const query = 'SELECT * FROM ServicosComunitarios';
+        const { rows } = yield pool.query(query);
+        res.json(rows);
     }
     catch (error) {
         console.error('Erro ao buscar serviços comunitários:', error);
@@ -98,15 +106,15 @@ const editarPerfil = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return res.status(401).json({ error: 'Token não fornecido' });
     }
     try {
-        const decodedToken = jsonwebtoken_1.default.verify(token, config_1.secretKey);
-        const db = (0, db_1.getDatabaseInstance)();
-        const user = yield db.get('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
-        if (!user) {
+        const secretKey = process.env.secretKey;
+        const decodedToken = jsonwebtoken_1.default.verify(token, secretKey);
+        const query = 'SELECT * FROM Usuarios WHERE ID = $1';
+        const userResult = yield pool.query(query, [decodedToken.UserId]);
+        if (userResult.rows.length === 0) {
             return res.status(401).json({ error: 'Usuário associado ao token não encontrado' });
         }
-        // Dados a serem atualizados
+        const user = userResult.rows[0];
         const { NomeCompleto, Email, Telefone, Bairro, ParoquiaMaisFrequentada, DataNascimento, IDServicoComunitario, NovaSenha } = req.body;
-        // Verifique se os campos a serem atualizados estão presentes no corpo da solicitação
         if (NomeCompleto) {
             user.NomeCompleto = NomeCompleto;
         }
@@ -132,8 +140,8 @@ const editarPerfil = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             const senhaHash = yield bcrypt_1.default.hash(NovaSenha, 10);
             user.SenhaHash = senhaHash;
         }
-        // Atualize o perfil do usuário no banco de dados
-        yield db.run('UPDATE Usuarios SET NomeCompleto = ?, Email = ?, Telefone = ?, Bairro = ?, ParoquiaMaisFrequentada = ?, DataNascimento = ?, IDServicoComunitario = ?, SenhaHash = ? WHERE ID = ?', [user.NomeCompleto, user.Email, user.Telefone, user.Bairro, user.ParoquiaMaisFrequentada, user.DataNascimento, user.IDServicoComunitario, user.SenhaHash, user.ID]);
+        const updateQuery = 'UPDATE Usuarios SET NomeCompleto = $1, Email = $2, Telefone = $3, Bairro = $4, ParoquiaMaisFrequentada = $5, DataNascimento = $6, IDServicoComunitario = $7, SenhaHash = $8 WHERE ID = $9';
+        yield pool.query(updateQuery, [user.NomeCompleto, user.Email, user.Telefone, user.Bairro, user.ParoquiaMaisFrequentada, user.DataNascimento, user.IDServicoComunitario, user.SenhaHash, user.ID]);
         res.json({ message: 'Perfil atualizado com sucesso' });
     }
     catch (error) {
@@ -147,13 +155,14 @@ const getUsuarioLogado = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         return res.status(401).json({ error: 'Token não fornecido' });
     }
     try {
-        const decodedToken = jsonwebtoken_1.default.verify(token, config_1.secretKey);
-        const db = (0, db_1.getDatabaseInstance)();
-        const user = yield db.get('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
-        if (!user) {
+        const secretKey = process.env.secretKey;
+        const decodedToken = jsonwebtoken_1.default.verify(token, secretKey);
+        const query = 'SELECT * FROM Usuarios WHERE ID = $1';
+        const userResult = yield pool.query(query, [decodedToken.UserId]);
+        if (userResult.rows.length === 0) {
             return res.status(401).json({ error: 'Usuário associado ao token não encontrado' });
         }
-        // Você pode ajustar os campos de resposta conforme necessário
+        const user = userResult.rows[0];
         const userData = {
             UserId: decodedToken.UserId,
             nomeCompleto: user.NomeCompleto,

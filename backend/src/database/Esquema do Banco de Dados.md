@@ -103,4 +103,10 @@
 - **ServicoComunitarioID**: Chave estrangeira que se relaciona com a tabela "ServicosComunitarios", representando o serviço comunitário associado ao usuário.
 - **NivelAcessoNoServico**: O nível de acesso do usuário para um serviço comunitário específico.
 
+INSERT INTO ParticipacaoServicoComunitario (ID, UsuarioID, ServicoComunitarioID, NivelAcessoNoServico, nomeServicoComunitario) VALUES
+(1, 3, 1, 5, 'Cantor na Missa'),
+(2, 3, 4, 4, 'Catequista'),
+(3, 3, 13, 4, 'Cantor no Grupo de Oração'),
+(4, 2, 4, 4, 'Catequista'),
+(5, 2, 2, 4, 'Violinista na Missa'),
 

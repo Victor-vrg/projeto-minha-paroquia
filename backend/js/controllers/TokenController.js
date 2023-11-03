@@ -14,22 +14,42 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verificarTokenRecuperacao = exports.enviarEmailRecuperacao = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const config_1 = require("../config");
-const db_1 = require("../database/db");
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const pg_1 = require("pg");
+const emailService = process.env.EMAIL_SERVICE;
+const emailUser = process.env.EMAIL_USER;
+const emailPass = process.env.EMAIL_PASS;
+const pool = new pg_1.Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DATABASE,
+    password: process.env.DB_PASS,
+    port: 5432,
+});
 const enviarEmailRecuperacao = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.body;
     try {
-        const db = (0, db_1.getDatabaseInstance)();
-        const user = yield db.get('SELECT * FROM Usuarios WHERE Email = ?', [email]);
-        if (!user) {
+        const client = yield pool.connect();
+        const user = yield client.query('SELECT * FROM Usuarios WHERE Email = $1', [email]);
+        client.release();
+        if (user.rowCount === 0) {
             throw new Error('Usuário não encontrado.');
         }
         // Gere um token de recuperação
         const token = generateRandomToken();
-        yield db.run('INSERT INTO Tokens (UserID, Token, Expiracao) VALUES (?, ?, ?)', [user.ID, token, new Date(new Date().getTime() + 3600000)]);
-        const transporter = config_1.EmailParoquia;
+        const expiracao = new Date(new Date().getTime() + 3600000);
+        const client2 = yield pool.connect();
+        yield client2.query('INSERT INTO Tokens (UserID, Token, Expiracao) VALUES ($1, $2, $3)', [user.rows[0].id, token, expiracao]);
+        client2.release();
+        const transporter = nodemailer_1.default.createTransport({
+            service: emailService,
+            auth: {
+                user: emailUser,
+                pass: emailPass,
+            },
+        });
         const mailOptions = {
-            from: config_1.Emailuser,
+            from: emailUser,
             to: email,
             subject: 'Recuperação de Senha',
             text: `Use o código a seguir para recuperar sua senha: ${token}`,
@@ -53,16 +73,15 @@ exports.enviarEmailRecuperacao = enviarEmailRecuperacao;
 const verificarTokenRecuperacao = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { token, novaSenha } = req.body;
     try {
-        const db = (0, db_1.getDatabaseInstance)();
-        const tokenInfo = yield db.get('SELECT * FROM Tokens WHERE Token = ? AND Expiracao >= ?', [token, new Date()]);
-        if (!tokenInfo) {
+        const client = yield pool.connect();
+        const tokenInfo = yield client.query('SELECT * FROM Tokens WHERE Token = $1 AND Expiracao >= $2', [token, new Date()]);
+        if (tokenInfo.rowCount === 0) {
             throw new Error('Token inválido ou expirado.');
         }
-        // Atualize a senha do usuário
         const senhaHash = yield bcrypt_1.default.hash(novaSenha, 10);
-        yield db.run('UPDATE Usuarios SET SenhaHash = ? WHERE ID = ?', [senhaHash, tokenInfo.UserID]);
-        // Remova o token de recuperação após o uso
-        yield db.run('DELETE FROM Tokens WHERE Token = ?', [token]);
+        yield client.query('UPDATE Usuarios SET SenhaHash = $1 WHERE ID = $2', [senhaHash, tokenInfo.rows[0].userid]);
+        yield client.query('DELETE FROM Tokens WHERE Token = $1', [token]);
+        client.release();
         res.json({ message: 'Senha redefinida com sucesso.' });
     }
     catch (error) {

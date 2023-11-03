@@ -4,6 +4,7 @@
 /backend/node_modules
 /backend/src/minha-paroquia-db.sqlite3
 /backend/src/basedeteste.sqlite3
+/backend/.env
 /backend/public/img
 /frontend/src/config.js
 /frontend/src/firebaseConfig.js

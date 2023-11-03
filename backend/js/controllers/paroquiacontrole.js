@@ -10,7 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.obterParoquiaPorNome = exports.obterSugestoesParoquias = void 0;
-const db_1 = require("../database/db");
+const pg_1 = require("pg");
+const DB_USER = process.env.DB_USER;
+const DB_HOST = process.env.DB_HOST;
+const DATABASE = process.env.DATABASE;
+const DB_PASS = process.env.DB_PASS;
+const pool = new pg_1.Pool({
+    user: DB_USER,
+    host: DB_HOST,
+    database: DATABASE,
+    password: DB_PASS,
+    port: 5432,
+});
 const obterSugestoesParoquias = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const searchText = req.query.s;
@@ -21,11 +32,12 @@ const obterSugestoesParoquias = (req, res) => __awaiter(void 0, void 0, void 0, 
         const query = `
       SELECT NomeParoquia
       FROM Paroquias
-      WHERE NomeParoquia LIKE ?;
+      WHERE NomeParoquia LIKE $1;
     `;
         const searchValue = `%${searchText}%`;
-        const db = (0, db_1.getDatabaseInstance)();
-        const sugestoes = yield db.all(query, [searchValue]);
+        const client = yield pool.connect();
+        const { rows: sugestoes } = yield client.query(query, [searchValue]);
+        client.release();
         res.json(sugestoes);
     }
     catch (error) {
@@ -40,12 +52,13 @@ const obterParoquiaPorNome = (req, res) => __awaiter(void 0, void 0, void 0, fun
         const query = `
       SELECT *
       FROM Paroquias
-      WHERE NomeParoquia = ?;
+      WHERE NomeParoquia = $1;
     `;
-        const db = (0, db_1.getDatabaseInstance)();
-        const paroquia = yield db.get(query, [nomeParoquia]);
-        if (paroquia) {
-            res.json(paroquia);
+        const client = yield pool.connect();
+        const { rows: paroquias } = yield client.query(query, [nomeParoquia]);
+        client.release();
+        if (paroquias.length > 0) {
+            res.json(paroquias[0]);
         }
         else {
             res.status(404).json({ error: 'Paróquia não encontrada' });

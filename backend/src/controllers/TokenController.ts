@@ -1,29 +1,52 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { EmailParoquia, Emailuser } from '../config';
-import UsuarioModel from '../models/usuarioModel';
-import TokenModel from '../models/TokenModel';
-import { getDatabaseInstance } from '../database/db';
+import nodemailer from 'nodemailer';
+import { Pool } from 'pg';
+
+const emailService = process.env.EMAIL_SERVICE;
+const emailUser = process.env.EMAIL_USER;
+const emailPass = process.env.EMAIL_PASS;
+
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DATABASE,
+  password: process.env.DB_PASS,
+  port: 5432,
+});
 
 export const enviarEmailRecuperacao = async (req: Request, res: Response) => {
   const { email } = req.body;
   try {
-    const db = getDatabaseInstance();
-    const user = await db.get<UsuarioModel>('SELECT * FROM Usuarios WHERE Email = ?', [email]);
-    if (!user) {
+    const client = await pool.connect();
+    const user = await client.query('SELECT * FROM Usuarios WHERE Email = $1', [email]);
+    client.release();
+
+    if (user.rowCount === 0) {
       throw new Error('Usuário não encontrado.');
     }
-    // Gere um token de recuperação
-    const token = generateRandomToken(); 
-    await db.run(
-      'INSERT INTO Tokens (UserID, Token, Expiracao) VALUES (?, ?, ?)',
-      [user.ID, token, new Date(new Date().getTime() + 3600000)]
-    );
 
-    const transporter = EmailParoquia;
+    // Gere um token de recuperação
+    const token = generateRandomToken();
+    const expiracao = new Date(new Date().getTime() + 3600000);
+    
+    const client2 = await pool.connect();
+    await client2.query(
+      'INSERT INTO Tokens (UserID, Token, Expiracao) VALUES ($1, $2, $3)',
+      [user.rows[0].id, token, expiracao]
+    );
+    client2.release();
+
+    const transporter = nodemailer.createTransport({
+      service: emailService,
+      auth: {
+        user: emailUser,
+        pass: emailPass,
+      },
+    });
 
     const mailOptions = {
-      from: Emailuser,
+      from: emailUser,
       to: email,
       subject: 'Recuperação de Senha',
       text: `Use o código a seguir para recuperar sua senha: ${token}`,
@@ -47,22 +70,23 @@ export const verificarTokenRecuperacao = async (req: Request, res: Response) => 
   const { token, novaSenha } = req.body;
 
   try {
-    const db = getDatabaseInstance();
-    const tokenInfo = await db.get<TokenModel>(
-      'SELECT * FROM Tokens WHERE Token = ? AND Expiracao >= ?',
+    const client = await pool.connect();
+    const tokenInfo = await client.query(
+      'SELECT * FROM Tokens WHERE Token = $1 AND Expiracao >= $2',
       [token, new Date()]
     );
 
-    if (!tokenInfo) {
+    if (tokenInfo.rowCount === 0) {
       throw new Error('Token inválido ou expirado.');
     }
 
-    // Atualize a senha do usuário
     const senhaHash = await bcrypt.hash(novaSenha, 10);
-    await db.run('UPDATE Usuarios SET SenhaHash = ? WHERE ID = ?', [senhaHash, tokenInfo.UserID]);
 
-    // Remova o token de recuperação após o uso
-    await db.run('DELETE FROM Tokens WHERE Token = ?', [token]);
+    await client.query('UPDATE Usuarios SET SenhaHash = $1 WHERE ID = $2', [senhaHash, tokenInfo.rows[0].userid]);
+
+    await client.query('DELETE FROM Tokens WHERE Token = $1', [token]);
+
+    client.release();
 
     res.json({ message: 'Senha redefinida com sucesso.' });
   } catch (error: any) {
@@ -77,7 +101,7 @@ function generateRandomToken(): string {
   const tokenLength = 8;
 
   for (let i = 0; i < tokenLength; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length );
+    const randomIndex = Math.floor(Math.random() * characters.length);
     token += characters.charAt(randomIndex);
   }
 

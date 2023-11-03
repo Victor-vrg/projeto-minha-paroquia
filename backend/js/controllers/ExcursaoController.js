@@ -10,11 +10,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getExcursoes = exports.getExcursoesDestacadas = void 0;
-const db_1 = require("../database/db");
+const pg_1 = require("pg");
+const DB_USER = process.env.DB_USER;
+const DB_HOST = process.env.DB_HOST;
+const DATABASE = process.env.DATABASE;
+const DB_PASS = process.env.DB_PASS;
+const pool = new pg_1.Pool({
+    user: DB_USER,
+    host: DB_HOST,
+    database: DATABASE,
+    password: DB_PASS,
+    port: 5432,
+});
 const getExcursoesDestacadas = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const db = (0, db_1.getDatabaseInstance)();
-        const excursoesDestacadas = yield db.all('SELECT * FROM Excursoes WHERE Destaque > 0');
+        const client = yield pool.connect();
+        const result = yield client.query('SELECT * FROM Excursoes WHERE Destaque > 0');
+        client.release();
+        const excursoesDestacadas = result.rows;
         res.json(excursoesDestacadas);
     }
     catch (error) {
@@ -25,8 +38,10 @@ const getExcursoesDestacadas = (req, res) => __awaiter(void 0, void 0, void 0, f
 exports.getExcursoesDestacadas = getExcursoesDestacadas;
 const getExcursoes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const db = (0, db_1.getDatabaseInstance)();
-        const excursao = yield db.all('SELECT * FROM Excursoes ORDER BY DataInicioExcursao, HoraInicioExcursao');
+        const client = yield pool.connect();
+        const result = yield client.query('SELECT * FROM Excursoes ORDER BY DataInicioExcursao, HoraInicioExcursao');
+        client.release();
+        const excursao = result.rows;
         res.json(excursao);
     }
     catch (error) {

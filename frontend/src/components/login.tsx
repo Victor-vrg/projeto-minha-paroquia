@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/login.css';
 
-const api = axios.create({ 
+const api = axios.create({
   baseURL: 'https://backend-minha-paroquia.vercel.app/',
 });
 
@@ -19,7 +19,7 @@ function Login() {
 
     try {
       console.log('Tentativa de login:', NomeCompleto, senha);
-      const response = await axios.post('https://backend-minha-paroquia.vercel.app/usuarios/login', {
+      const response = await api.post('/usuarios/login', {
         NomeCompleto,
         Email: NomeCompleto, 
         senha,

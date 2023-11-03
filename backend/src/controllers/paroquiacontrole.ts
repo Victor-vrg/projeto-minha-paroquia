@@ -1,6 +1,19 @@
 import { Request, Response } from 'express';
-import { getDatabaseInstance } from '../database/db';
+import { Pool } from 'pg';
 
+
+const DB_USER = process.env.DB_USER;
+const DB_HOST = process.env.DB_HOST;
+const DATABASE = process.env.DATABASE;
+const DB_PASS = process.env.DB_PASS;
+
+const pool = new Pool({
+  user: DB_USER,
+  host: DB_HOST,
+  database: DATABASE,
+  password: DB_PASS,
+  port: 5432,
+});
 
 export const obterSugestoesParoquias = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -14,13 +27,14 @@ export const obterSugestoesParoquias = async (req: Request, res: Response): Prom
     const query = `
       SELECT NomeParoquia
       FROM Paroquias
-      WHERE NomeParoquia LIKE ?;
+      WHERE NomeParoquia LIKE $1;
     `;
 
     const searchValue = `%${searchText}%`;
 
-    const db = getDatabaseInstance();
-    const sugestoes = await db.all(query, [searchValue]);
+    const client = await pool.connect();
+    const { rows: sugestoes } = await client.query(query, [searchValue]);
+    client.release();
 
     res.json(sugestoes);
   } catch (error) {
@@ -36,14 +50,15 @@ export const obterParoquiaPorNome = async (req: Request, res: Response): Promise
     const query = `
       SELECT *
       FROM Paroquias
-      WHERE NomeParoquia = ?;
+      WHERE NomeParoquia = $1;
     `;
 
-    const db = getDatabaseInstance();
-    const paroquia = await db.get(query, [nomeParoquia]);
+    const client = await pool.connect();
+    const { rows: paroquias } = await client.query(query, [nomeParoquia]);
+    client.release();
 
-    if (paroquia) {
-      res.json(paroquia);
+    if (paroquias.length > 0) {
+      res.json(paroquias[0]);
     } else {
       res.status(404).json({ error: 'Paróquia não encontrada' });
     }
