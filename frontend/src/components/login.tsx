@@ -19,7 +19,7 @@ function Login() {
 
     try {
       console.log('Tentativa de login:', NomeCompleto, senha);
-      const response = await api.post('/usuarios/login', {
+      const response = await api.post('usuarios/login', {
         NomeCompleto,
         Email: NomeCompleto, 
         senha,
