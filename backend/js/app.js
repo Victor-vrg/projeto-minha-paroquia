@@ -27,7 +27,6 @@ const port = 3001;
 const path = require('path');
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.use('/public', express_1.default.static(path.join(__dirname, 'public')));
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, db_1.initializeDatabase)();
