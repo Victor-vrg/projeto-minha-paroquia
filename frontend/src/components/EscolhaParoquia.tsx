@@ -10,6 +10,10 @@ interface EscolhaParoquiaProps {
   setParoquiaSelecionada: React.Dispatch<React.SetStateAction<ParoquiaModel | null>>;
 }
 
+const api = axios.create({
+  baseURL: 'https://backend-minha-paroquia.vercel.app/',
+});
+
 const EscolhaParoquia: React.FC<EscolhaParoquiaProps> = ({ setParoquiaSelecionada }) => {
   const [paroquias, setParoquias] = useState<ParoquiaModel[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
@@ -23,7 +27,7 @@ const EscolhaParoquia: React.FC<EscolhaParoquiaProps> = ({ setParoquiaSelecionad
     }
 
     try {
-      const response = await axios.get(`https://backend-minha-paroquia.vercel.app/api/paroquias?s=${searchText}`);
+      const response = await api.get(`/api/paroquias?s=${searchText}`);
       setParoquias(response.data);
     } catch (error) {
       console.error('Erro ao buscar sugestões de paróquias:', error);

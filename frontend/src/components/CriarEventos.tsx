@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
 const authToken = localStorage.getItem("token");
-
+const api = axios.create({
+  baseURL: 'https://backend-minha-paroquia.vercel.app/',
+});
 // Função para converter o caminho da imagem
 function convertImageURL(imageURL: string) {
   const match = imageURL.match(/\/d\/(.+?)\//);
@@ -53,8 +55,8 @@ function GerenciadorEventos() {
 
   const fetchServicosComunitarios = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/role/niveis-abaixode5",
+      const response = await api.get(
+        "/role/niveis-abaixode5",
         {
           headers: {
             Authorization: authToken,
@@ -133,8 +135,8 @@ function GerenciadorEventos() {
 
     if (Object.values(newErrors).every((error) => !error)) {
       try {
-        const response = await axios.post(
-          "http://localhost:3001/eventos/criar",
+        const response = await api.post(
+          "/eventos/criar",
           evento,
           {
             headers: {

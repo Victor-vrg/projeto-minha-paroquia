@@ -18,6 +18,10 @@ interface PaginaPrincipalParoquiaProps {
   isFielDesconhecido: boolean;
 }
 
+const api = axios.create({
+  baseURL: 'https://backend-minha-paroquia.vercel.app/',
+});
+
 const PaginaPrincipalParoquia: React.FC<PaginaPrincipalParoquiaProps> = ({ paroquiaSelecionada}) => {
   const [eventos, setEventos] = useState<EventosModel[]>([]);
   const [excursao, setExcursao] = useState<ExcursaoModel[]>([]);
@@ -27,7 +31,7 @@ const isFielDesconhecido = location.state?.isFielDesconhecido || false;
   const nomeParoquia = location.state?.nomeParoquia || localStorage.getItem('paroquiaSelecionada') || '';
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/eventos/eventos`)
+    api.get(`/eventos/eventos`)
       .then((response) => {
         setEventos(response.data);
       })
@@ -35,7 +39,7 @@ const isFielDesconhecido = location.state?.isFielDesconhecido || false;
         console.error('Erro ao buscar eventos:', error);
       });
 
-    axios.get(`http://localhost:3001/excursao/excursao`)
+    api.get(`/excursao/excursao`)
       .then((response) => {
         setExcursao(response.data);
       })

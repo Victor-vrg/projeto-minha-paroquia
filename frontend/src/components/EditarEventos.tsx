@@ -6,7 +6,9 @@ import '../styles/GerenciadorEventos.css'
 import { useNavigate } from "react-router-dom";
 
 const authToken = localStorage.getItem("token");
-
+const api = axios.create({
+  baseURL: 'https://backend-minha-paroquia.vercel.app/',
+});
 function EditarEvento() {
   const [servicosComunitariosOptions, setServicosComunitariosOptions] = useState([]);
   const [selectedServicosComunitarios, setSelectedServicosComunitarios] = useState([] as MultiValue<any>);
@@ -49,7 +51,7 @@ function EditarEvento() {
 
   const fetchServicosComunitarios = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/role/niveis-abaixode5", {
+      const response = await api.get("/role/niveis-abaixode5", {
         headers: {
           Authorization: authToken,
         },
@@ -67,7 +69,7 @@ function EditarEvento() {
 
   const fetchEventos = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/eventos/eventos");
+      const response = await api.get("/eventos/eventos");
       setEventos(response.data);
       setEvento(response.data[0]); // Preencha o formulário com o primeiro evento
     } catch (error) {
@@ -104,7 +106,7 @@ function EditarEvento() {
     try {
       // Faça uma chamada para atualizar o evento no servidor com os dados de 'evento'
       // Certifique-se de enviar a solicitação correta para atualizar o evento
-      const response = await axios.put(`http://localhost:3001/eventos/editar-evento/${evento.ID}`, evento, {
+      const response = await api.put(`/eventos/editar-evento/${evento.ID}`, evento, {
         headers: {
           Authorization: authToken,
         },

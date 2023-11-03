@@ -6,6 +6,11 @@ import '../styles/cadastroUsuario.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
+
+const api = axios.create({
+  baseURL: 'https://backend-minha-paroquia.vercel.app/',
+});
+
 function EditarPerfilUsuario() {
   const [dados, setDados] = useState({
     NomeCompleto: '',
@@ -43,7 +48,7 @@ function EditarPerfilUsuario() {
 
   const fetchServicosComunitarios = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/usuarios/servicos-comunitarios');
+      const response = await api.get('/usuarios/servicos-comunitarios');
       const options = response.data.map((servicoComunitario: any) => ({
         value: servicoComunitario.ID,
         label: servicoComunitario.ServicoComunitario,
@@ -56,7 +61,7 @@ function EditarPerfilUsuario() {
 
   const fetchParoquias = async (searchText: string) => {
     try {
-      const response = await axios.get(`http://localhost:3001/api/paroquias?s=${searchText}`);
+      const response = await api.get(`/api/paroquias?s=${searchText}`);
       const options = response.data.map((paroquia: any) => ({
         value: paroquia.ID,
         label: paroquia.NomeParoquia,
@@ -69,7 +74,7 @@ function EditarPerfilUsuario() {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/usuarios/usuario-logado', {
+      const response = await api.get('/usuarios/usuario-logado', {
         headers: {
           Authorization: authToken, 
         },
@@ -133,7 +138,7 @@ function EditarPerfilUsuario() {
         data.NovaSenha = novaSenha;
       }
   
-      const response = await axios.put('http://localhost:3001/usuarios/editar-perfil', data, {
+      const response = await api.put('/usuarios/editar-perfil', data, {
         headers: {
           Authorization: authToken, 
         },

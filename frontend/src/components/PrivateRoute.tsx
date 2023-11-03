@@ -10,13 +10,15 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const authToken = localStorage.getItem('token');
   const navigate = useNavigate();
   const [userAccess, setUserAccess] = useState<any[]>([]);
-
+  const api = axios.create({
+    baseURL: 'https://backend-minha-paroquia.vercel.app/',
+  });
   useEffect(() => {
     if (!authToken || authToken === 'fiel-desconhecido') {
       navigate('/pagina-principal-paroquia');
     } else {
-      axios
-        .get('http://localhost:3001/role/niveis-de-acesso', {
+      api
+        .get('/role/niveis-de-acesso', {
           headers: {
             Authorization: authToken,
           },

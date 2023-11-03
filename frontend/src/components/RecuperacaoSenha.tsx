@@ -15,12 +15,14 @@ function RecuperacaoSenha() {
 const [tokenError, setTokenError] = useState('');
 const [senhaError, setSenhaError] = useState('');
   const navigate = useNavigate();
-
+  const api = axios.create({
+    baseURL: 'https://backend-minha-paroquia.vercel.app/',
+  });
   const handleEnviarEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
-      const response = await axios.post('http://localhost:3001/tokens/enviar-email-recuperacao', { email });
+      const response = await api.post('/tokens/enviar-email-recuperacao', { email });
       console.log(response.data);
   
       setMostrarFormToken(true);
@@ -39,7 +41,7 @@ const [senhaError, setSenhaError] = useState('');
     }
   
     try {
-      const response = await axios.post('http://localhost:3001/tokens/verificar-token-recuperacao', { token, novaSenha });
+      const response = await api.post('/tokens/verificar-token-recuperacao', { token, novaSenha });
       console.log(response.data);
   
       navigate('/pagina-principal-paroquia');

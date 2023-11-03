@@ -6,7 +6,9 @@ import '../styles/Entreemcontato.css'
 interface EntreEmContatoProps {
   paroquiaSelecionada: ParoquiaModel | null; // Certifique-se de que a paróquia seja passada como prop
 }
-
+const api = axios.create({
+  baseURL: 'https://backend-minha-paroquia.vercel.app/',
+});
 const EntreEmContato: React.FC<EntreEmContatoProps> = ({
   paroquiaSelecionada,
 }) => {
@@ -32,8 +34,8 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
   useEffect(() => {
     if (paroquiaSelecionada) 
       if (paroquiaSelecionada && paroquiaSelecionada !== prevParoquiaSelecionada.current) {
-      axios
-        .get(`http://localhost:3001/api/paroquias-nome/${paroquiaSelecionada.NomeParoquia}`)
+      api
+        .get(`/api/paroquias-nome/${paroquiaSelecionada.NomeParoquia}`)
         .then((response) => {
           setParoquiaInfo(response.data);
           console.log('Valor de paroquiaInfo:', response.data);
@@ -51,8 +53,8 @@ const EntreEmContato: React.FC<EntreEmContatoProps> = ({
       return;
     }
   
-    axios
-      .post("http://localhost:3001/feedback/add-feedback", formData)
+    api
+      .post("/feedback/add-feedback", formData)
       .then((response) => {
         setEnviado(true);
       })

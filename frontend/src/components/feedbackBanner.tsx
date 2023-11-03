@@ -2,7 +2,9 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import '../styles/FeedbackBanner.css';
 
-
+const api = axios.create({
+  baseURL: 'https://backend-minha-paroquia.vercel.app/',
+});
 const FeedbackBanner = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [formData, setFormData] = useState({
@@ -43,8 +45,8 @@ const FeedbackBanner = () => {
     }
   
     // Enviar os dados do formulário para o servidor
-    axios
-      .post('http://localhost:3001/feedback/add-feedback', formData)
+    api
+      .post('/feedback/add-feedback', formData)
       .then((response) => {
         console.log('Feedback enviado com sucesso'); 
         setEnviado(true);

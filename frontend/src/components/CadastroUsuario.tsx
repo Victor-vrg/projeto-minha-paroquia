@@ -16,6 +16,10 @@ function CadastroUsuario() {
     IDServicoComunitario: [] as number[],
     senha: '',
   });
+  const api = axios.create({
+    baseURL: 'https://backend-minha-paroquia.vercel.app/',
+  });
+  
 
   const [servicosComunitariosOptions, setServicosComunitariosOptions] = useState([]);
   const [selectedServicosComunitarios, setSelectedServicosComunitarios] = useState([] as MultiValue<any>);
@@ -38,7 +42,7 @@ function CadastroUsuario() {
 
   const fetchServicosComunitarios = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/usuarios/servicos-comunitarios');
+      const response = await api.get('/usuarios/servicos-comunitarios');
       const options = response.data.map((servicoComunitario: any) => ({
         value: servicoComunitario.ID,
         label: servicoComunitario.ServicoComunitario,
@@ -51,7 +55,7 @@ function CadastroUsuario() {
 
   const fetchParoquias = async (searchText: string) => {
     try {
-      const response = await axios.get(`http://localhost:3001/api/paroquias?s=${searchText}`);
+      const response = await api.get(`/api/paroquias?s=${searchText}`);
       const options = response.data.map((paroquia: any) => ({
         value: paroquia.ID,
         label: paroquia.NomeParoquia,
@@ -76,7 +80,7 @@ function CadastroUsuario() {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/usuarios/cadastrar', dados);
+      const response = await api.post('/usuarios/cadastrar', dados);
       console.log('Cadastro bem-sucedido:', response.data);
       navigate('/login');
     } catch (error) {
