@@ -23,7 +23,7 @@ const EscolhaParoquia: React.FC<EscolhaParoquiaProps> = ({ setParoquiaSelecionad
     }
 
     try {
-      const response = await axios.get(`http://localhost:3001/api/paroquias?s=${searchText}`);
+      const response = await axios.get(`https://backend-minha-paroquia.vercel.app/api/paroquias?s=${searchText}`);
       setParoquias(response.data);
     } catch (error) {
       console.error('Erro ao buscar sugestões de paróquias:', error);
