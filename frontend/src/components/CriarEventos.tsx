@@ -29,7 +29,7 @@ function GerenciadorEventos() {
     CaminhoImagem: "",
     TipoEvento: "",
     IDServicoComunitario: [] as number[],
-    Destaque: "", 
+    Destaque: "",
   });
 
   const [errors, setErrors] = useState({
@@ -76,11 +76,11 @@ function GerenciadorEventos() {
     fetchServicosComunitarios();
   }, []);
 
-  
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-  
+
     if (name === "CaminhoImagem") {
       const convertedImagePath = convertImageURL(value);
       setEvento({ ...evento, [name]: convertedImagePath });
@@ -88,7 +88,7 @@ function GerenciadorEventos() {
       setEvento({ ...evento, [name]: value });
     }
   };
-  
+
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setEvento({ ...evento, [name]: value });
@@ -116,13 +116,15 @@ function GerenciadorEventos() {
     }
 
     if (moment(evento.DataInicio).isBefore(today, "day")) {
-      newErrors.DataInicio = "A Data de Início não pode ser anterior à data atual.";
+      newErrors.DataInicio =
+        "A Data de Início não pode ser anterior à data atual.";
     } else {
       newErrors.DataInicio = "";
     }
 
     if (moment(evento.DataFim).isBefore(evento.DataInicio, "day")) {
-      newErrors.DataFim = "A Data de Fim não pode ser anterior à Data de Início.";
+      newErrors.DataFim =
+        "A Data de Fim não pode ser anterior à Data de Início.";
     } else {
       newErrors.DataFim = "";
     }
@@ -140,17 +142,21 @@ function GerenciadorEventos() {
             },
           }
         );
-    
+
         if (response.status === 201) {
           console.log("O evento foi criado com sucesso:", response.data);
           navigate("/pagina-principal-paroquia");
         } else {
           console.error("Ocorreu um erro ao criar o evento:", response.data);
-          alert("Houve um problema ao criar o evento. Por favor, tente novamente.");
+          alert(
+            "Houve um problema ao criar o evento. Por favor, tente novamente."
+          );
         }
       } catch (error) {
         console.error("Ocorreu um erro ao criar o evento:", error);
-        alert("Houve um problema ao criar o evento. Por favor, tente novamente.");
+        alert(
+          "Houve um problema ao criar o evento. Por favor, tente novamente."
+        );
       }
     }
   };
@@ -287,17 +293,16 @@ function GerenciadorEventos() {
             </div>
 
             <div>
-  <label>Deseja destacar seu evento?</label>
-  <select
-    name="Destaque"
-    value={evento.Destaque}
-    onChange={handleChange}
-  >
-    <option value={0}>Não</option>
-    <option value={1}>Sim</option>
-  </select>
-</div>
-
+              <label>Deseja destacar seu evento?</label>
+              <select
+                name="Destaque"
+                value={evento.Destaque}
+                onChange={handleChange}
+              >
+                <option value={0}>Não</option>
+                <option value={1}>Sim</option>
+              </select>
+            </div>
 
             <div>
               <button type="submit">Criar Evento</button>

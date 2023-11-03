@@ -10,8 +10,8 @@ router.post('/login', login);
 router.get('/usuario-logado',verifyToken, getUsuarioLogado);
 router.put('/editar-perfil', verifyToken, editarPerfil)
 
-router.get('/getUsers' , getUsers) 
 
+router.get('/getUsers', verifyToken, getUsers) 
 router.get('/servicos-comunitarios', getServicosComunitarios);
 
 

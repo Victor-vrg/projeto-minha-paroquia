@@ -58,7 +58,6 @@ const createTables = async () => {
         CaminhoImagem     VARCHAR (255),
         TipoEvento        VARCHAR (150),
         Participacao      TEXT          CHECK (Participacao IN ('Sim', 'Talvez', 'Não') ),
-        Participacao      DEFAULT '',
         Destaque          INTEGER       DEFAULT 0,
         Ocultar          INTEGER       DEFAULT 0,
         ParoquiaID        INT

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createEvento = exports.getEventos = exports.getEventosDestacados = void 0;
+exports.editarEventos = exports.createEvento = exports.getEventos = exports.getEventosDestacados = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config");
 const db_1 = require("../database/db");
@@ -69,3 +69,36 @@ const createEvento = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.createEvento = createEvento;
+const editarEventos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.header('Authorization');
+    if (!token) {
+        return res.status(401).json({ error: 'Token não fornecido' });
+    }
+    try {
+        const decodedToken = jsonwebtoken_1.default.verify(token, config_1.secretKey);
+        const db = (0, db_1.getDatabaseInstance)();
+        const user = yield db.get('SELECT * FROM Usuarios WHERE ID = ?', [decodedToken.UserId]);
+        if (!user) {
+            return res.status(401).json({ error: 'Usuário associado ao token não encontrado' });
+        }
+        // Obtenha os dados do evento a ser editado
+        const eventId = req.params.id;
+        const { NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, LocalizacaoEvento, DescricaoEvento, CaminhoImagem, TipoEvento, Destaque, IDServicoComunitario, } = req.body;
+        // Atualize os dados do evento no banco de dados
+        yield db.run('UPDATE Eventos SET NomeEvento = ?, DataInicio = ?, DataFim = ?, HoraInicio = ?, HoraFim = ?, LocalizacaoEvento = ?, DescricaoEvento = ?, CaminhoImagem = ?, TipoEvento = ?, Destaque = ? WHERE ID = ?', [NomeEvento, DataInicio, DataFim, HoraInicio, HoraFim, LocalizacaoEvento, DescricaoEvento, CaminhoImagem, TipoEvento, Destaque, eventId]);
+        // Atualize a associação do evento aos serviços comunitários
+        // Primeiro, exclua todas as associações antigas
+        yield db.run('DELETE FROM Eventos_ServicosComunitarios WHERE EventoID = ?', [eventId]);
+        // Em seguida, insira as novas associações
+        for (const serviceId of IDServicoComunitario) {
+            yield db.run('INSERT INTO Eventos_ServicosComunitarios (EventoID, ServicoComunitarioID) VALUES (?, ?)', [eventId, serviceId]);
+        }
+        res.json({ message: 'Evento atualizado com sucesso' });
+        console.log("atualizado evento");
+    }
+    catch (error) {
+        console.error('Erro ao atualizar evento:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+exports.editarEventos = editarEventos;

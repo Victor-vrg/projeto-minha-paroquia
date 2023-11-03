@@ -3,7 +3,7 @@ import { secretKey } from './config';
 import { NextFunction, Request, Response } from 'express';
 import { getDatabaseInstance } from './database/db';
 import UsuarioModel from './models/usuarioModel';
-import { ServicoComunitario } from './models/ServicoComunitarioModels';
+
 
 export const verifyToken = async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
   const token = req.header('Authorization');

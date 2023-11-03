@@ -1,6 +1,8 @@
 import React from 'react';
 import EditarPerfilUsuario from './EdicaoPerfilUsuario';
-import GerenciadorEventos from './GerenciadorEventos';
+import CriarEventos from './CriarEventos';
+import EditarEvento from './EditarEventos';
+
 
 interface PainelAdmProps {
   userAccess: { NivelAcessoNoServico: number }[]; 
@@ -13,7 +15,8 @@ function PainelAdm({ userAccess }: PainelAdmProps) {
     return (
       <div>
         <EditarPerfilUsuario />
-        <GerenciadorEventos />
+        <CriarEventos />
+        <EditarEvento />
       </div>
     );
   } else {

@@ -64,7 +64,6 @@ const createTables = () => __awaiter(void 0, void 0, void 0, function* () {
         CaminhoImagem     VARCHAR (255),
         TipoEvento        VARCHAR (150),
         Participacao      TEXT          CHECK (Participacao IN ('Sim', 'Talvez', 'Não') ),
-        Participacao      DEFAULT '',
         Destaque          INTEGER       DEFAULT 0,
         Ocultar          INTEGER       DEFAULT 0,
         ParoquiaID        INT

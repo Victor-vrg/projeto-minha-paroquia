@@ -51,3 +51,4 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 startServer();
+exports.default = app;

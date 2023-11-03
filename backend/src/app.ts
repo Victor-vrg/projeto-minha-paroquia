@@ -8,7 +8,7 @@ import usuarioRoute from './routes/usuarioRoute'
 import tokenRoute from './routes/tokenRoute'; 
 import  ServicoComunitario  from './routes/ServicoComunitarioRoute';
 import { initializeDatabase } from './database/db'; 
-import { verifyToken } from './middleware';
+
 
 const app = express();
 const port = 3001;
@@ -46,3 +46,5 @@ const startServer = async () => {
 };
 
 startServer();
+
+export default app;

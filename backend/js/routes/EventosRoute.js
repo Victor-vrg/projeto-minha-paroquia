@@ -9,6 +9,7 @@ const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
 router.get('/destaque', EventosController_1.getEventosDestacados);
 router.get('/eventos', EventosController_1.getEventos);
+router.put('/editar-evento/:id', middleware_1.verifyToken, EventosController_1.editarEventos);
 router.post('/criar', middleware_1.verifyToken, (req, res, next) => {
     const { IDServicoComunitario } = req.body;
     const permissionsPromises = IDServicoComunitario.map((IDServicoComunitario) => {

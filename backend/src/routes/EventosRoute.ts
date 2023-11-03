@@ -1,12 +1,12 @@
 import express, { Router, Request, Response } from 'express';
-import { getEventosDestacados, getEventos, createEvento } from '../controllers/EventosController';
+import { getEventosDestacados, getEventos, createEvento ,editarEventos } from '../controllers/EventosController';
 import { checkUserAccess, verifyToken } from '../middleware';
 
 const router: Router = express.Router();
 
 router.get('/destaque', getEventosDestacados);
 router.get('/eventos', getEventos);
-
+router.put('/editar-evento/:id', verifyToken, editarEventos);
 router.post('/criar', verifyToken, (req, res, next) => {
   const { IDServicoComunitario } = req.body;
   const permissionsPromises = IDServicoComunitario.map((IDServicoComunitario: number) => {

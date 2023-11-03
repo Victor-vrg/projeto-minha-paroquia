@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import  paroquiaModel  from '../models/paroquiaModel';
 import { getDatabaseInstance } from '../database/db';
 
 

@@ -6,4 +6,6 @@
 /backend/src/basedeteste.sqlite3
 /backend/public/img
 /frontend/src/config.js
-
+/frontend/src/firebaseConfig.js
+.vercel
+vercel.json
