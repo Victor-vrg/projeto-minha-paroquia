@@ -54,8 +54,9 @@ const EscolhaParoquia: React.FC<EscolhaParoquiaProps> = ({ setParoquiaSelecionad
       // Armazene o nome da paróquia em localStorage
       localStorage.setItem('paroquiaSelecionada', initialOption.NomeParoquia);
   
-      // Redirecione para a página de login
-      navigate('/login');
+      // Redirecione para a página de login /login, mas devido o cenario do sqlite não funcionar no vercel vamos deixar para pagina principal
+     // navigate('/login');
+      navigate('/pagina-principal-paroquia')
     }
   };
   
