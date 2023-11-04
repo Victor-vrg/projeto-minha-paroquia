@@ -57,7 +57,7 @@ const isFielDesconhecido = location.state?.isFielDesconhecido || false;
 
   return (
     <div>
-      <FeedbackBanner />
+     {/* <FeedbackBanner />  retirado devido sqlite no vercel não permitir inserção de dados */}
       <Header nomeParoquia={nomeParoquia} isFielDesconhecido={isFielDesconhecido} />
       <div id="eventos">
         <Carrossel titulo="Eventos" eventos={eventos} />
